@@ -1,0 +1,9 @@
+[
+  "001_profiles.sql",
+  "002_scholarships.sql",
+  "003_saved_scholarships.sql",
+  "004_universities.sql",
+  "005_professors.sql",
+  "006_user_deadlines.sql",
+  "007_reminder_prefs.sql"
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "University of Sydney",
+    "country": "Australia",
+    "city": "Sydney",
+    "website": "https://www.sydney.edu.au",
+    "tuition_usd_min": 32000,
+    "tuition_usd_max": 48000,
+    "min_gpa": 3.0,
+    "min_ielts": 6.5,
+    "degree_levels": ["bsc", "msc", "phd"],
+    "fields": ["computer science", "cybersecurity", "data science"]
+  },
+  {
+    "name": "McGill University",
+    "country": "Canada",
+    "city": "Montreal",
+    "website": "https://www.mcgill.ca",
+    "tuition_usd_min": 18000,
+    "tuition_usd_max": 35000,
+    "min_gpa": 3.2,
+    "min_ielts": 6.5,
+    "degree_levels": ["bsc", "msc", "phd"],
+    "fields": ["computer science", "engineering", "data science"]
+  },
+  {
+    "name": "University of Waterloo",
+    "country": "Canada",
+    "city": "Waterloo",
+    "website": "https://uwaterloo.ca",
+    "tuition_usd_min": 22000,
+    "tuition_usd_max": 40000,
+    "min_gpa": 3.3,
+    "min_ielts": 6.5,
+    "degree_levels": ["bsc", "msc", "phd"],
+    "fields": ["computer science", "cybersecurity", "software engineering"]
+  },
+  {
+    "name": "Imperial College London",
+    "country": "United Kingdom",
+    "city": "London",
+    "website": "https://www.imperial.ac.uk",
+    "tuition_usd_min": 38000,
+    "tuition_usd_max": 55000,
+    "min_gpa": 3.4,
+    "min_ielts": 7.0,
+    "degree_levels": ["bsc", "msc", "phd"],
+    "fields": ["computer science", "cybersecurity", "engineering"]
+  },
+  {
+    "name": "Technical University of Munich",
+    "country": "Germany",
+    "city": "Munich",
+    "website": "https://www.tum.de",
+    "tuition_usd_min": 0,
+    "tuition_usd_max": 3000,
+    "min_gpa": 3.0,
+    "min_ielts": 6.5,
+    "degree_levels": ["bsc", "msc", "phd"],
+    "fields": ["computer science", "engineering", "data science"]
+  },
+  {
+    "name": "MIT",
+    "country": "United States",
+    "city": "Cambridge",
+    "website": "https://www.mit.edu",
+    "tuition_usd_min": 55000,
+    "tuition_usd_max": 60000,
+    "min_gpa": 3.7,
+    "min_ielts": 7.0,
+    "degree_levels": ["bsc", "msc", "phd"],
+    "fields": ["computer science", "artificial intelligence", "cybersecurity"]
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Dr. Lisa Nguyen",
+    "university_name": "University of Sydney",
+    "department": "School of Computer Science",
+    "email": "lisa.nguyen@sydney.edu.au",
+    "research_areas": ["cybersecurity", "network security", "data science"],
+    "website": "https://www.sydney.edu.au",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. Ahmed Hassan",
+    "university_name": "McGill University",
+    "department": "School of Computer Science",
+    "email": "ahmed.hassan@mcgill.ca",
+    "research_areas": ["machine learning", "computer science", "nlp"],
+    "website": "https://www.mcgill.ca",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Sophie Martin",
+    "university_name": "University of Waterloo",
+    "department": "Cheriton School of Computer Science",
+    "email": "sophie.martin@uwaterloo.ca",
+    "research_areas": ["cybersecurity", "software engineering", "privacy"],
+    "website": "https://uwaterloo.ca",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. Daniel Clarke",
+    "university_name": "Imperial College London",
+    "department": "Department of Computing",
+    "email": "d.clarke@imperial.ac.uk",
+    "research_areas": ["cybersecurity", "distributed systems", "computer science"],
+    "website": "https://www.imperial.ac.uk",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Hans Weber",
+    "university_name": "Technical University of Munich",
+    "department": "Department of Informatics",
+    "email": "h.weber@tum.de",
+    "research_areas": ["data science", "engineering", "computer science"],
+    "website": "https://www.tum.de",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. Maria Santos",
+    "university_name": "MIT",
+    "department": "EECS",
+    "email": "msantos@mit.edu",
+    "research_areas": ["artificial intelligence", "computer science", "cybersecurity"],
+    "website": "https://www.mit.edu",
+    "accepts_msc": true,
+    "accepts_phd": true
+  }
+]

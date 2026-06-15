@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Dr. Sarah Chen",
+    "university_name": "University of Melbourne",
+    "department": "School of Computing and Information Systems",
+    "email": "s.chen@unimelb.edu.au",
+    "research_areas": ["cybersecurity", "network security", "malware analysis"],
+    "website": "https://www.unimelb.edu.au",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. James Okonkwo",
+    "university_name": "UNSW Sydney",
+    "department": "School of Computer Science and Engineering",
+    "email": "j.okonkwo@unsw.edu.au",
+    "research_areas": ["cybersecurity", "cryptography", "blockchain"],
+    "website": "https://www.unsw.edu.au",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Priya Sharma",
+    "university_name": "University of Adelaide",
+    "department": "School of Computer Science",
+    "email": "priya.sharma@adelaide.edu.au",
+    "research_areas": ["data science", "machine learning", "computer science"],
+    "website": "https://www.adelaide.edu.au",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. Michael Torres",
+    "university_name": "Monash University",
+    "department": "Faculty of Information Technology",
+    "email": "m.torres@monash.edu",
+    "research_areas": ["information technology", "cybersecurity", "cloud security"],
+    "website": "https://www.monash.edu",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Emily Watson",
+    "university_name": "University of Toronto",
+    "department": "Department of Computer Science",
+    "email": "ewatson@cs.toronto.edu",
+    "research_areas": ["computer science", "artificial intelligence", "nlp"],
+    "website": "https://www.utoronto.ca",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. David Kim",
+    "university_name": "University of British Columbia",
+    "department": "Department of Electrical and Computer Engineering",
+    "email": "dkim@ece.ubc.ca",
+    "research_areas": ["engineering", "computer science", "embedded systems"],
+    "website": "https://www.ubc.ca",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Rachel Green",
+    "university_name": "University of Manchester",
+    "department": "Department of Computer Science",
+    "email": "rachel.green@manchester.ac.uk",
+    "research_areas": ["cybersecurity", "privacy", "computer science"],
+    "website": "https://www.manchester.ac.uk",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. Oliver Hughes",
+    "university_name": "University of Edinburgh",
+    "department": "School of Informatics",
+    "email": "o.hughes@ed.ac.uk",
+    "research_areas": ["data science", "machine learning", "computer science"],
+    "website": "https://www.ed.ac.uk",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Anna Petrov",
+    "university_name": "Georgia Institute of Technology",
+    "department": "School of Cybersecurity and Privacy",
+    "email": "apetrov@gatech.edu",
+    "research_areas": ["cybersecurity", "network security", "iot security"],
+    "website": "https://www.gatech.edu",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Prof. Robert Lee",
+    "university_name": "Carnegie Mellon University",
+    "department": "School of Computer Science",
+    "email": "rlee@cmu.edu",
+    "research_areas": ["cybersecurity", "software engineering", "computer science"],
+    "website": "https://www.cmu.edu",
+    "accepts_msc": true,
+    "accepts_phd": true
+  },
+  {
+    "name": "Dr. Fatima Al-Rashid",
+    "university_name": "University of Melbourne",
+    "department": "School of Computing and Information Systems",
+    "email": "f.alrashid@unimelb.edu.au",
+    "research_areas": ["data science", "health informatics", "computer science"],
+    "website": "https://www.unimelb.edu.au",
+    "accepts_msc": true,
+    "accepts_phd": false
+  },
+  {
+    "name": "Prof. Thomas Wright",
+    "university_name": "University of Toronto",
+    "department": "Department of Computer Science",
+    "email": "twright@cs.toronto.edu",
+    "research_areas": ["computer science", "distributed systems", "cloud computing"],
+    "website": "https://www.utoronto.ca",
+    "accepts_msc": true,
+    "accepts_phd": true
+  }
+]

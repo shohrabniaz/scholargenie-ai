@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ScholarGenie AI
 
-## Getting Started
+**Your AI Study Abroad Copilot** — free for international students.
 
-First, run the development server:
+Phase 0 includes: marketing landing page, waitlist, auth, profile onboarding, and dashboard shell.
+
+## Stack
+
+- **Next.js 16** (App Router, TypeScript)
+- **Tailwind CSS 4**
+- **Supabase** (PostgreSQL, Auth)
+- **React Hook Form + Zod**
+
+## Quick start
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Create a Supabase project
+
+1. Go to [supabase.com](https://supabase.com) and create a free project.
+2. In **Project Settings → API**, copy the project URL and **publishable** key.
+3. Copy `.env.example` to `.env.local` and fill in the values:
+
+```bash
+cp .env.example .env.local
+```
+
+### 3. Run the database migration
+
+In Supabase **SQL Editor**, paste and run:
+
+```
+supabase/migrations/001_profiles.sql
+```
+
+### 4. Configure auth redirects
+
+In Supabase **Authentication → URL Configuration**, set:
+
+- **Site URL:** `http://localhost:3000`
+- **Redirect URLs:** `http://localhost:3000/auth/callback`
+
+For email confirmation, you can disable **Confirm email** under Auth providers during local dev.
+
+### 5. Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## User flow (Phase 0)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Landing** (`/`) — features + waitlist signup
+2. **Sign up** (`/signup`) — create account
+3. **Onboarding** (`/onboarding`) — 3-step profile wizard
+4. **Dashboard** (`/dashboard`) — profile summary + upcoming features
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── page.tsx              # Landing
+│   ├── login/ signup/
+│   ├── onboarding/
+│   ├── dashboard/
+│   └── auth/callback/
+├── components/
+│   ├── auth/
+│   ├── layout/
+│   ├── marketing/
+│   ├── onboarding/
+│   └── ui/
+├── lib/
+│   ├── supabase/
+│   └── validations/
+└── types/
+supabase/migrations/
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy (free)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Frontend:** [Vercel](https://vercel.com) — connect repo, add env vars
+- **Database + Auth:** Supabase free tier
 
-## Deploy on Vercel
+## Roadmap
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Phase | Features |
+|-------|----------|
+| **0** (now) | Landing, auth, onboarding, dashboard |
+| **1** | Scholarship + university search, AI advisor |
+| **2** | Watchlist, match scores, deadline emails |
+| **3** | Professor finder |
+| **4** | SOP writer, CV analyzer |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+Private — student project.

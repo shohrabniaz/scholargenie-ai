@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Chevening Scholarships",
+    "country": "United Kingdom",
+    "university": null,
+    "degree_levels": ["msc"],
+    "fields": [],
+    "funding_type": "fully_funded",
+    "amount_description": "Full tuition, living allowance, flights",
+    "deadline": "2026-11-05",
+    "eligibility": "One-year master's in the UK. Leadership potential required.",
+    "source_url": "https://www.chevening.org"
+  },
+  {
+    "name": "Commonwealth Shared Scholarships",
+    "country": "United Kingdom",
+    "university": null,
+    "degree_levels": ["msc"],
+    "fields": [],
+    "funding_type": "fully_funded",
+    "amount_description": "Full tuition and living costs",
+    "deadline": "2026-12-13",
+    "eligibility": "Citizens of Commonwealth developing countries.",
+    "source_url": "https://cscuk.fcdo.gov.uk"
+  },
+  {
+    "name": "Vanier Canada Graduate Scholarships",
+    "country": "Canada",
+    "university": null,
+    "degree_levels": ["phd"],
+    "fields": [],
+    "funding_type": "fully_funded",
+    "amount_description": "CAD 50,000 per year for 3 years",
+    "deadline": "2026-10-30",
+    "eligibility": "Doctoral students demonstrating research excellence and leadership.",
+    "source_url": "https://vanier.gc.ca"
+  },
+  {
+    "name": "Ontario Graduate Scholarship",
+    "country": "Canada",
+    "university": null,
+    "degree_levels": ["msc", "phd"],
+    "fields": [],
+    "funding_type": "merit",
+    "amount_description": "CAD 15,000 per year",
+    "deadline": "2026-02-01",
+    "eligibility": "Merit-based award for graduate study in Ontario.",
+    "source_url": "https://www.ontario.ca/page/ontario-graduate-scholarship"
+  },
+  {
+    "name": "Fulbright Foreign Student Program",
+    "country": "United States",
+    "university": null,
+    "degree_levels": ["msc", "phd"],
+    "fields": [],
+    "funding_type": "fully_funded",
+    "amount_description": "Tuition, living stipend, health insurance",
+    "deadline": "2026-05-15",
+    "eligibility": "Graduate study in the US. Country-specific eligibility.",
+    "source_url": "https://foreign.fulbrightonline.org"
+  },
+  {
+    "name": "DAAD EPOS Scholarships",
+    "country": "Germany",
+    "university": null,
+    "degree_levels": ["msc"],
+    "fields": ["development", "engineering", "computer science"],
+    "funding_type": "fully_funded",
+    "amount_description": "Monthly stipend, travel, insurance",
+    "deadline": "2026-07-31",
+    "eligibility": "Development-related master's programs in Germany.",
+    "source_url": "https://www.daad.de/en/study-and-research-in-germany/scholarships"
+  }
+]
