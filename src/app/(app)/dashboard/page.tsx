@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   Calendar,
+  ClipboardList,
   FileText,
   GraduationCap,
   Search,
@@ -53,6 +54,14 @@ const features = [
     status: "Live",
     description: "Saved scholarship dates plus custom reminders.",
     href: "/deadlines",
+  },
+  {
+    id: "applications",
+    icon: ClipboardList,
+    title: "Application tracker",
+    status: "Live",
+    description: "Track scholarship, university, and visa application status.",
+    href: "/applications",
   },
   {
     id: "tools",
