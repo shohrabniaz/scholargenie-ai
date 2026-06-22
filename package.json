@@ -10,7 +10,8 @@
     "db:migrate": "node scripts/migrate.mjs",
     "db:seed": "node scripts/seed.mjs",
     "db:seed-more": "node scripts/seed-more.mjs",
-    "setup:production": "node scripts/setup-production.mjs"
+    "setup:production": "node scripts/setup-production.mjs",
+    "vercel:env": "node scripts/sync-vercel-env.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
