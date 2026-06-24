@@ -29,7 +29,7 @@ function parseEnvFile(path) {
 
 function upsertEnv(key, value) {
   for (const target of ["production", "preview", "development"]) {
-    const remove = spawnSync("npx", ["vercel", "env", "rm", key, target, "--yes"], {
+    spawnSync("npx", ["vercel", "env", "rm", key, target, "--yes"], {
       cwd: projectRoot,
       stdio: "pipe",
       shell: true,

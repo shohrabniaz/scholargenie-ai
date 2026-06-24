@@ -7,7 +7,7 @@ import {
   tierSortOrder,
 } from "@/lib/matching/university-tier";
 import type { Profile } from "@/types/database";
-import type { MatchTier, University } from "@/types/university";
+import type { University } from "@/types/university";
 
 type PageProps = {
   searchParams: Promise<{

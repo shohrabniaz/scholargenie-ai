@@ -29,7 +29,7 @@ export default async function ProfessorsPage({ searchParams }: PageProps) {
     ? supabase.from("saved_professors").select("professor_id").eq("user_id", user.id)
     : Promise.resolve({ data: [], error: null });
 
-  let professorQuery = supabase
+  const professorQuery = supabase
     .from("professors")
     .select("*, universities(id, name, country, city)")
     .order("name");

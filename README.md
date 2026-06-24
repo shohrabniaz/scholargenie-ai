@@ -2,6 +2,8 @@
 
 **Your AI Study Abroad Copilot** — free for international students.
 
+**Live:** [scholargenie-ai.vercel.app](https://scholargenie-ai.vercel.app)
+
 ## Features
 
 - Scholarship search with match scores and watchlist
@@ -17,6 +19,7 @@
 - Next.js 16 · React 19 · Tailwind 4
 - Supabase (Auth + PostgreSQL)
 - OpenAI · Resend (optional)
+- Hosted on Vercel
 
 ## Quick start
 
@@ -31,17 +34,20 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Production deploy
+## Production
+
+Supabase auth URLs (configured for production):
+
+- **Site URL:** `https://scholargenie-ai.vercel.app`
+- **Redirect:** `https://scholargenie-ai.vercel.app/auth/callback`
+
+Sync env vars to Vercel:
 
 ```bash
-npm run setup:production
+npm run vercel:env https://scholargenie-ai.vercel.app
 ```
 
-1. **Vercel** — import [github.com/shohrabniaz/scholargenie-ai](https://github.com/shohrabniaz/scholargenie-ai), add env vars from `.env.example`
-2. **Supabase** — set Site URL and redirect to `https://your-app.vercel.app/auth/callback`
-3. **Optional** — `OPENAI_API_KEY`, `RESEND_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY` for full AI + email cron
-
-CI runs on every push via GitHub Actions (lint + build).
+Optional Vercel env vars: `OPENAI_API_KEY`, `RESEND_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
 
 ## Scripts
 
@@ -51,7 +57,7 @@ CI runs on every push via GitHub Actions (lint + build).
 | `npm run db:migrate` | Apply SQL migrations |
 | `npm run db:seed` | Seed scholarships + universities + professors |
 | `npm run db:seed-more` | Add extra dataset rows |
-| `npm run setup:production` | CRON_SECRET + deploy checklist |
+| `npm run vercel:env` | Push `.env.local` keys to Vercel |
 
 ## License
 
