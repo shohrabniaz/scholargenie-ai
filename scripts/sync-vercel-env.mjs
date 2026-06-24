@@ -10,6 +10,8 @@ const envPath = resolve(projectRoot, ".env.local");
 const SYNC_KEYS = [
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "SUPABASE_DB_PASSWORD",
   "CRON_SECRET",
   "NEXT_PUBLIC_SITE_URL",
 ];

@@ -27,12 +27,25 @@ type AuthFormProps = {
 function friendlyAuthError(message: string) {
   const lower = message.toLowerCase();
   if (lower.includes("email not confirmed") || lower.includes("not confirmed")) {
-    return "Please confirm your email before logging in. Check your inbox for the confirmation link.";
+    return "Your email is not verified yet. Use the button below to verify instantly.";
   }
   if (lower.includes("invalid login credentials")) {
     return "Incorrect email or password. Try again or reset your password.";
   }
   return message;
+}
+
+async function signInAndRedirect(email: string, password: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error || !data.session) {
+    throw new Error(error?.message ?? "Could not sign in");
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const next = params.get("next") ?? "/dashboard";
+  window.location.assign(next.startsWith("/") ? next : "/dashboard");
 }
 
 export function AuthForm({
@@ -45,7 +58,9 @@ export function AuthForm({
   );
   const [message, setMessage] = useState<string | null>(initialMessage);
   const [loading, setLoading] = useState(false);
-  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [savedEmail, setSavedEmail] = useState<string | null>(null);
+  const [savedPassword, setSavedPassword] = useState<string | null>(null);
 
   const {
     register,
@@ -56,8 +71,46 @@ export function AuthForm({
     resolver: zodResolver(authSchema),
   });
 
+  async function verifyEmailNow() {
+    const email = savedEmail ?? getValues("email");
+    const password = savedPassword ?? getValues("password");
+    if (!email) return;
+
+    setLoading(true);
+    setError(null);
+
+    const res = await fetch("/api/auth/confirm-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = (await res.json()) as { error?: string; message?: string; ok?: boolean };
+
+    if (!res.ok) {
+      setError(data.message ?? data.error ?? "Could not verify email.");
+      setLoading(false);
+      return;
+    }
+
+    if (mode === "login" && password) {
+      try {
+        await signInAndRedirect(email, password);
+        return;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Verified, but login failed.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    setMessage("Email verified. You can log in now.");
+    setNeedsVerification(false);
+    setLoading(false);
+  }
+
   async function resendConfirmation() {
-    const email = pendingEmail ?? getValues("email");
+    const email = savedEmail ?? getValues("email");
     if (!email) return;
 
     setLoading(true);
@@ -72,9 +125,13 @@ export function AuthForm({
     });
 
     if (resendError) {
-      setError(resendError.message);
+      setError(
+        "Supabase could not send email. Use “Verify my email now” instead — Supabase’s built-in mail often does not deliver.",
+      );
     } else {
-      setMessage("Confirmation email sent. Check your inbox.");
+      setMessage(
+        "If email delivery is enabled, a link was sent. Otherwise use “Verify my email now”.",
+      );
     }
     setLoading(false);
   }
@@ -83,11 +140,42 @@ export function AuthForm({
     setLoading(true);
     setError(null);
     setMessage(null);
-
-    const supabase = createClient();
+    setNeedsVerification(false);
+    setSavedEmail(data.email);
+    setSavedPassword(data.password);
 
     if (mode === "signup") {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      const apiRes = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
+
+      const apiData = (await apiRes.json()) as {
+        ok?: boolean;
+        error?: string;
+        message?: string;
+      };
+
+      if (apiRes.ok && apiData.ok) {
+        try {
+          await signInAndRedirect(data.email, data.password);
+          return;
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Account created but login failed.");
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (apiRes.status !== 503) {
+        setError(apiData.message ?? apiData.error ?? "Could not create account.");
+        setLoading(false);
+        return;
+      }
+
+      const supabase = createClient();
+      const { error: signUpError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -101,44 +189,25 @@ export function AuthForm({
         return;
       }
 
-      if (signUpData.session) {
-        window.location.assign("/onboarding");
-        return;
-      }
-
-      setPendingEmail(data.email);
+      setNeedsVerification(true);
       setMessage(
-        "Account created. Check your email and click the confirmation link, then log in.",
+        "Account created. Supabase verification emails often do not arrive — tap “Verify my email now” below.",
       );
       setLoading(false);
       return;
     }
 
-    const { data: signInData, error: signInError } =
-      await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
-
-    if (signInError) {
-      const friendly = friendlyAuthError(signInError.message);
+    try {
+      await signInAndRedirect(data.email, data.password);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Login failed";
+      const friendly = friendlyAuthError(msg);
       setError(friendly);
-      if (friendly.includes("confirm your email")) {
-        setPendingEmail(data.email);
+      if (friendly.includes("not verified")) {
+        setNeedsVerification(true);
       }
       setLoading(false);
-      return;
     }
-
-    if (!signInData.session) {
-      setError("Could not start a session. Please try again.");
-      setLoading(false);
-      return;
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get("next") ?? "/dashboard";
-    window.location.assign(next.startsWith("/") ? next : "/dashboard");
   }
 
   return (
@@ -195,16 +264,26 @@ export function AuthForm({
         </p>
       ) : null}
 
-      {pendingEmail && error?.includes("confirm your email") ? (
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          disabled={loading}
-          onClick={resendConfirmation}
-        >
-          Resend confirmation email
-        </Button>
+      {needsVerification ? (
+        <div className="space-y-2">
+          <Button
+            type="button"
+            className="w-full"
+            disabled={loading}
+            onClick={verifyEmailNow}
+          >
+            Verify my email now
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            disabled={loading}
+            onClick={resendConfirmation}
+          >
+            Try sending email again
+          </Button>
+        </div>
       ) : null}
 
       <Button type="submit" className="w-full" disabled={loading}>
