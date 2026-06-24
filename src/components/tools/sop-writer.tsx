@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,12 +18,31 @@ export function SopWriter({ profile }: SopWriterProps) {
   const [goals, setGoals] = useState("");
   const [whyNow, setWhyNow] = useState("");
   const [draft, setDraft] = useState<string | null>(null);
+  const [refinePrompt, setRefinePrompt] = useState("Make the opening stronger and tighten the conclusion.");
+  const [refining, setRefining] = useState(false);
   const [copied, setCopied] = useState(false);
 
   function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
     const text = generateSopDraft(profile, { motivation, experience, goals, whyNow });
     setDraft(text);
+  }
+
+  async function handleRefine() {
+    if (!draft || refining) return;
+    setRefining(true);
+    try {
+      const res = await fetch("/api/tools/sop/refine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ draft, instruction: refinePrompt }),
+      });
+      const data = (await res.json()) as { draft?: string; error?: string };
+      if (!res.ok || !data.draft) throw new Error(data.error ?? "Refine failed");
+      setDraft(data.draft);
+    } finally {
+      setRefining(false);
+    }
   }
 
   async function handleCopy() {
@@ -91,6 +110,23 @@ export function SopWriter({ profile }: SopWriterProps) {
           <pre className="mt-4 max-h-[480px] overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-foreground">
             {draft}
           </pre>
+          <div className="mt-4 space-y-2 border-t border-border pt-4">
+            <Label htmlFor="sop-refine">Refine with AI</Label>
+            <Textarea
+              id="sop-refine"
+              value={refinePrompt}
+              onChange={(e) => setRefinePrompt(e.target.value)}
+              rows={2}
+            />
+            <Button type="button" size="sm" onClick={handleRefine} disabled={refining}>
+              {refining ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              ) : (
+                <Sparkles className="h-3.5 w-3.5" aria-hidden />
+              )}
+              Refine draft
+            </Button>
+          </div>
         </div>
       ) : null}
     </div>

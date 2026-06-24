@@ -10,6 +10,9 @@ export function MarketingFooter() {
           {APP_NAME} — free for students. Not legal advice.
         </p>
         <div className="flex gap-6 text-sm text-muted">
+          <Link href="/countries/australia" className="hover:text-foreground">
+            Guides
+          </Link>
           <Link href="/login" className="hover:text-foreground">
             Log in
           </Link>

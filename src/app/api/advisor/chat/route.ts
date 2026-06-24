@@ -57,6 +57,7 @@ export async function POST(request: Request) {
         universities ?? [],
       );
       const reply = await chatWithOpenAi(systemPrompt, messages);
+      await persistMessages(supabase, user.id, lastUserMessage, reply);
       return NextResponse.json({ reply, mode: "openai" });
     } catch (error) {
       const message = error instanceof Error ? error.message : "LLM error";
@@ -66,6 +67,7 @@ export async function POST(request: Request) {
         scholarships ?? [],
         universities ?? [],
       );
+      await persistMessages(supabase, user.id, lastUserMessage, fallback);
       return NextResponse.json({
         reply: fallback,
         mode: "rules",
@@ -81,5 +83,19 @@ export async function POST(request: Request) {
     universities ?? [],
   );
 
+  await persistMessages(supabase, user.id, lastUserMessage, reply);
+
   return NextResponse.json({ reply, mode: "rules" });
+}
+
+async function persistMessages(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  userContent: string,
+  assistantContent: string,
+) {
+  await supabase.from("advisor_messages").insert([
+    { user_id: userId, role: "user", content: userContent },
+    { user_id: userId, role: "assistant", content: assistantContent },
+  ]);
 }

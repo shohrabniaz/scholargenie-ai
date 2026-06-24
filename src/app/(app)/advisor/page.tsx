@@ -29,9 +29,16 @@ export default async function AdvisorPage() {
     );
   }
 
-  const [{ data: scholarships }, { data: universities }] = await Promise.all([
+  const [{ data: scholarships }, { data: universities }, { data: savedMessages }] =
+    await Promise.all([
     supabase.from("scholarships").select("*").returns<Scholarship[]>(),
     supabase.from("universities").select("*").returns<University[]>(),
+    supabase
+      .from("advisor_messages")
+      .select("role, content")
+      .eq("user_id", user!.id)
+      .order("created_at", { ascending: true })
+      .limit(40),
   ]);
 
   const roadmap = generateRoadmap(
@@ -53,6 +60,10 @@ export default async function AdvisorPage() {
           profile={profile}
           initialRoadmap={roadmap}
           llmEnabled={isOpenAiConfigured()}
+          initialMessages={(savedMessages ?? []).map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          }))}
         />
       </div>
     </div>

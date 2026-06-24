@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 
-const COUNTRIES = ["", "Australia", "Canada", "United Kingdom", "United States"];
+import { DESTINATION_COUNTRIES } from "@/lib/constants/countries";
 const TIERS = ["", "safe", "target", "ambitious"];
 
 const TIER_LABELS: Record<string, string> = {
@@ -34,7 +34,7 @@ export function UniversityFilters() {
           onChange={(e) => update("country", e.target.value)}
         >
           <option value="">All countries</option>
-          {COUNTRIES.filter(Boolean).map((c) => (
+          {DESTINATION_COUNTRIES.map((c) => (
             <option key={c} value={c}>
               {c}
             </option>

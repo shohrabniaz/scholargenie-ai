@@ -28,18 +28,29 @@ export default async function UniversitiesPage({ searchParams }: PageProps) {
 
   if (params.country) query = query.eq("country", params.country);
 
-  const [{ data: universities, error }, profileResult] = await Promise.all([
+  const [{ data: universities, error }, profileResult, trackedResult] = await Promise.all([
     query.returns<University[]>(),
     user
       ? supabase.from("profiles").select("*").eq("id", user.id).maybeSingle<Profile>()
       : Promise.resolve({ data: null, error: null }),
+    user
+      ? supabase
+          .from("applications")
+          .select("university_id")
+          .eq("user_id", user.id)
+          .not("university_id", "is", null)
+      : Promise.resolve({ data: [], error: null }),
   ]);
 
   const profile = profileResult.data;
+  const trackedIds = new Set(
+    (trackedResult.data ?? []).map((r) => r.university_id).filter(Boolean) as string[],
+  );
 
   let items = (universities ?? []).map((u) => ({
     university: u,
     tier: computeUniversityTier(profile, u),
+    tracked: trackedIds.has(u.id),
   }));
 
   if (profile?.preferred_countries.length) {
@@ -101,9 +112,9 @@ export default async function UniversitiesPage({ searchParams }: PageProps) {
             No universities match your filters.
           </li>
         ) : (
-          items.map(({ university, tier }) => (
+          items.map(({ university, tier, tracked }) => (
             <li key={university.id}>
-              <UniversityCard university={university} tier={tier} />
+              <UniversityCard university={university} tier={tier} tracked={tracked} />
             </li>
           ))
         )}

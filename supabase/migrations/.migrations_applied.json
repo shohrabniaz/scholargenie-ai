@@ -6,5 +6,7 @@
   "005_professors.sql",
   "006_user_deadlines.sql",
   "007_reminder_prefs.sql",
-  "008_applications.sql"
+  "008_applications.sql",
+  "009_advisor_notifications.sql",
+  "010_application_checklist.sql"
 ]

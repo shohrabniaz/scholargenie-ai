@@ -11,6 +11,10 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
+  defaultChecklist,
+  parseChecklist,
+} from "@/lib/applications/checklist";
+import {
   KIND_LABELS,
   STATUS_LABELS,
   STATUS_ORDER,
@@ -65,6 +69,7 @@ export function ApplicationsClient({
         kind,
         status,
         notes: notes.trim() || null,
+        checklist: defaultChecklist(kind),
       })
       .select()
       .single<Application>();
@@ -92,6 +97,27 @@ export function ApplicationsClient({
         prev.map((a) => (a.id === id ? { ...a, status: nextStatus } : a)),
       );
       router.refresh();
+    }
+  }
+
+  async function toggleChecklistItem(appId: string, itemId: string, kind: ApplicationKind) {
+    const app = applications.find((a) => a.id === appId);
+    if (!app) return;
+
+    const items = parseChecklist(app.checklist, kind).map((item) =>
+      item.id === itemId ? { ...item, done: !item.done } : item,
+    );
+
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("applications")
+      .update({ checklist: items })
+      .eq("id", appId);
+
+    if (!error) {
+      setApplications((prev) =>
+        prev.map((a) => (a.id === appId ? { ...a, checklist: items } : a)),
+      );
     }
   }
 
@@ -231,6 +257,29 @@ export function ApplicationsClient({
                         ))}
                       </Select>
                     </div>
+                    <ul className="mt-4 space-y-2 border-t border-border pt-3">
+                      {parseChecklist(app.checklist, app.kind).map((item) => (
+                        <li key={item.id}>
+                          <label className="flex cursor-pointer items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={item.done}
+                              onChange={() =>
+                                toggleChecklistItem(app.id, item.id, app.kind)
+                              }
+                              className="rounded border-border"
+                            />
+                            <span
+                              className={
+                                item.done ? "text-muted line-through" : "text-foreground"
+                              }
+                            >
+                              {item.label}
+                            </span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 ))}
               </ul>

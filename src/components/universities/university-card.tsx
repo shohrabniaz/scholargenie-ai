@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
+import { TrackApplicationButton } from "@/components/applications/track-application-button";
 import { Badge } from "@/components/ui/badge";
 import {
   TIER_LABELS,
@@ -10,6 +11,7 @@ import {
 type UniversityCardProps = {
   university: University;
   tier: MatchTier | null;
+  tracked?: boolean;
 };
 
 function formatTuition(min: number | null, max: number | null) {
@@ -26,7 +28,7 @@ const tierBadgeVariant = (tier: MatchTier) => {
   return "subtle" as const;
 };
 
-export function UniversityCard({ university, tier }: UniversityCardProps) {
+export function UniversityCard({ university, tier, tracked = false }: UniversityCardProps) {
   return (
     <article className="rounded-2xl border border-border bg-surface p-5 transition-colors hover:bg-background">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -60,7 +62,13 @@ export function UniversityCard({ university, tier }: UniversityCardProps) {
       </dl>
 
       {university.website ? (
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <TrackApplicationButton
+            title={university.name}
+            kind="university"
+            universityId={university.id}
+            initiallyTracked={tracked}
+          />
           <Link
             href={university.website}
             target="_blank"
@@ -71,7 +79,16 @@ export function UniversityCard({ university, tier }: UniversityCardProps) {
             <ExternalLink className="h-3.5 w-3.5" aria-hidden />
           </Link>
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-4">
+          <TrackApplicationButton
+            title={university.name}
+            kind="university"
+            universityId={university.id}
+            initiallyTracked={tracked}
+          />
+        </div>
+      )}
     </article>
   );
 }

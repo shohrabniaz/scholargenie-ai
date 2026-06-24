@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { TrackApplicationButton } from "@/components/applications/track-application-button";
 import { SaveScholarshipButton } from "@/components/scholarships/save-scholarship-button";
 import { FUNDING_LABELS, type Scholarship } from "@/types/scholarship";
 
@@ -8,6 +9,7 @@ type ScholarshipCardProps = {
   scholarship: Scholarship;
   matchScore?: number | null;
   saved?: boolean;
+  tracked?: boolean;
 };
 
 function formatDeadline(deadline: string | null) {
@@ -23,6 +25,7 @@ export function ScholarshipCard({
   scholarship,
   matchScore,
   saved = false,
+  tracked = false,
 }: ScholarshipCardProps) {
   return (
     <article className="rounded-2xl border border-border bg-surface p-5 transition-colors hover:bg-background">
@@ -60,7 +63,14 @@ export function ScholarshipCard({
             <span className="text-muted">
               Deadline: {formatDeadline(scholarship.deadline)}
             </span>
-            <Link
+            <div className="flex flex-wrap items-center gap-2">
+              <TrackApplicationButton
+                title={scholarship.name}
+                kind="scholarship"
+                scholarshipId={scholarship.id}
+                initiallyTracked={tracked}
+              />
+              <Link
               href={scholarship.source_url}
               target="_blank"
               rel="noopener noreferrer"
@@ -69,6 +79,7 @@ export function ScholarshipCard({
               Official page
               <ExternalLink className="h-3.5 w-3.5" aria-hidden />
             </Link>
+            </div>
           </div>
         </div>
         <SaveScholarshipButton

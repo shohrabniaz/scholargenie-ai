@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { ApplicationsClient } from "@/components/applications/applications-client";
+import { VisaTemplatesPanel } from "@/components/applications/visa-templates-panel";
 import type { Application } from "@/types/application";
 
 export default async function ApplicationsPage() {
@@ -19,8 +20,9 @@ export default async function ApplicationsPage() {
         Kanban-style tracker for scholarships, universities, and visa steps.
       </p>
 
-      <div className="mt-8">
+      <div className="mt-8 space-y-10">
         <ApplicationsClient initialApplications={applications ?? []} />
+        <VisaTemplatesPanel />
       </div>
     </div>
   );

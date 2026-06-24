@@ -18,6 +18,7 @@ export type Application = {
   notes: string | null;
   scholarship_id: string | null;
   university_id: string | null;
+  checklist: unknown;
   created_at: string;
   updated_at: string;
 };

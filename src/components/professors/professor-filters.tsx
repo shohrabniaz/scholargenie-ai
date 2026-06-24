@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 
-const COUNTRIES = ["", "Australia", "Canada", "United Kingdom", "United States"];
+import { DESTINATION_COUNTRIES } from "@/lib/constants/countries";
 
 export function ProfessorFilters({ showSavedToggle = false }: { showSavedToggle?: boolean }) {
   const router = useRouter();
@@ -27,7 +27,7 @@ export function ProfessorFilters({ showSavedToggle = false }: { showSavedToggle?
           onChange={(e) => update("country", e.target.value)}
         >
           <option value="">All countries</option>
-          {COUNTRIES.filter(Boolean).map((c) => (
+          {DESTINATION_COUNTRIES.map((c) => (
             <option key={c} value={c}>
               {c}
             </option>

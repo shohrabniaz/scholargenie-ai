@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { APP_NAME } from "@/lib/brand";
 import { createClient } from "@/lib/supabase/client";
+import { NotificationsBell } from "@/components/notifications/notifications-bell";
 import { ThemeToggle } from "@/components/theme/theme-toggle-lazy";
 import { cn } from "@/lib/utils";
 
@@ -88,6 +89,8 @@ export function AppSidebar({ email }: AppSidebarProps) {
           })}
         </ul>
       </nav>
+
+      <NotificationsBell />
 
       <div className="border-t border-border p-4">
         {email ? (

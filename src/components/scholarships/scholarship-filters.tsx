@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 
-const COUNTRIES = ["", "Australia", "Canada", "United Kingdom", "United States"];
+import { DESTINATION_COUNTRIES } from "@/lib/constants/countries";
 const FUNDING = ["", "fully_funded", "partial", "merit", "need_based"];
 const DEGREES = ["", "bsc", "msc", "phd"];
 
@@ -70,7 +70,7 @@ export function ScholarshipFilters({ showSavedToggle = false }: ScholarshipFilte
             onChange={(e) => update("country", e.target.value)}
           >
             <option value="">All countries</option>
-            {COUNTRIES.filter(Boolean).map((c) => (
+            {DESTINATION_COUNTRIES.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>

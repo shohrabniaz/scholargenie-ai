@@ -11,19 +11,25 @@ type AdvisorChatProps = {
   profile: Profile;
   initialRoadmap: RoadmapStep[];
   llmEnabled: boolean;
+  initialMessages?: AdvisorMessage[];
 };
+
+function buildWelcome(profile: Profile, llmEnabled: boolean): AdvisorMessage {
+  return {
+    role: "assistant",
+    content: `Hi ${profile.full_name?.split(" ")[0] ?? "there"}! I'm your ScholarGenie AI advisor.${llmEnabled ? " I'm powered by GPT and know your profile plus our scholarship data." : ""}\n\nAsk me about funding, universities, professors, deadlines, or say "give me a roadmap."`,
+  };
+}
 
 export function AdvisorChat({
   profile,
   initialRoadmap,
   llmEnabled,
+  initialMessages = [],
 }: AdvisorChatProps) {
-  const [messages, setMessages] = useState<AdvisorMessage[]>([
-    {
-      role: "assistant",
-      content: `Hi ${profile.full_name?.split(" ")[0] ?? "there"}! I'm your ScholarGenie AI advisor.${llmEnabled ? " I'm powered by GPT and know your profile plus our scholarship data." : ""}\n\nAsk me about funding, universities, professors, deadlines, or say "give me a roadmap."`,
-    },
-  ]);
+  const [messages, setMessages] = useState<AdvisorMessage[]>(() =>
+    initialMessages.length > 0 ? initialMessages : [buildWelcome(profile, llmEnabled)],
+  );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"openai" | "rules" | null>(

@@ -34,6 +34,14 @@ export default async function ScholarshipsPage({ searchParams }: PageProps) {
         .eq("user_id", user.id)
     : Promise.resolve({ data: [], error: null });
 
+  const trackedQuery = user
+    ? supabase
+        .from("applications")
+        .select("scholarship_id")
+        .eq("user_id", user.id)
+        .not("scholarship_id", "is", null)
+    : Promise.resolve({ data: [], error: null });
+
   let scholarshipQuery = supabase
     .from("scholarships")
     .select("*")
@@ -47,18 +55,24 @@ export default async function ScholarshipsPage({ searchParams }: PageProps) {
     { data: scholarships, error: scholarshipsError },
     { data: profile },
     { data: savedRows },
+    { data: trackedRows },
   ] = await Promise.all([
     scholarshipQuery.returns<Scholarship[]>(),
     profileQuery,
     savedQuery,
+    trackedQuery,
   ]);
 
   const savedIds = new Set((savedRows ?? []).map((r) => r.scholarship_id));
+  const trackedIds = new Set(
+    (trackedRows ?? []).map((r) => r.scholarship_id).filter(Boolean) as string[],
+  );
 
   let items = (scholarships ?? []).map((s) => ({
     scholarship: s,
     matchScore: computeMatchScore(profile, s),
     saved: savedIds.has(s.id),
+    tracked: trackedIds.has(s.id),
   }));
 
   if (params.saved === "1") {
@@ -101,12 +115,13 @@ export default async function ScholarshipsPage({ searchParams }: PageProps) {
               : "No scholarships match your filters."}
           </li>
         ) : (
-          items.map(({ scholarship, matchScore, saved }) => (
+          items.map(({ scholarship, matchScore, saved, tracked }) => (
             <li key={scholarship.id}>
               <ScholarshipCard
                 scholarship={scholarship}
                 matchScore={matchScore}
                 saved={saved}
+                tracked={tracked}
               />
             </li>
           ))
