@@ -7,7 +7,17 @@ export const metadata: Metadata = {
   title: "Log in",
 };
 
-export default function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<{
+    error?: string;
+    message?: string;
+    next?: string;
+  }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+
   return (
     <>
       <MarketingHeader />
@@ -22,7 +32,11 @@ export default function LoginPage() {
             </Link>
           </p>
           <div className="mt-8">
-            <AuthForm mode="login" />
+            <AuthForm
+              mode="login"
+              initialError={params.error}
+              initialMessage={params.message}
+            />
           </div>
         </div>
       </main>

@@ -5,14 +5,27 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
+  const authError = searchParams.get("error_description") ?? searchParams.get("error");
 
-  if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
-    }
+  if (authError) {
+    const loginUrl = new URL("/login", origin);
+    loginUrl.searchParams.set("error", authError);
+    return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  if (!code) {
+    return NextResponse.redirect(`${origin}/login?error=missing_code`);
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+  if (error) {
+    const loginUrl = new URL("/login", origin);
+    loginUrl.searchParams.set("error", error.message);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  const safeNext = next.startsWith("/") ? next : "/dashboard";
+  return NextResponse.redirect(`${origin}${safeNext}`);
 }

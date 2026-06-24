@@ -16,6 +16,8 @@ export const config = {
     "/deadlines/:path*",
     "/applications/:path*",
     "/tools/:path*",
+    "/forgot-password",
+    "/reset-password",
     "/login",
     "/signup",
   ],
