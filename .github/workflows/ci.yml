@@ -41,7 +41,10 @@ jobs:
   deploy:
     name: Deploy to Vercel (production)
     needs: ci
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
+      vars.VERCEL_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     environment:
       name: production
