@@ -13,7 +13,8 @@
     "db:seed-phase5": "node scripts/seed-phase5.mjs",
     "auth:confirm": "node scripts/confirm-user.mjs",
     "setup:production": "node scripts/setup-production.mjs",
-    "vercel:env": "node scripts/sync-vercel-env.mjs"
+    "vercel:env": "node scripts/sync-vercel-env.mjs",
+    "setup:github-deploy": "node scripts/setup-github-deploy.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",

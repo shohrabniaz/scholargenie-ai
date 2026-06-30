@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!page) return { title: "Country guide" };
 
   return {
-    title: `${page.headline} | ScholarGenie AI`,
+    title: page.headline,
     description: page.summary,
   };
 }
