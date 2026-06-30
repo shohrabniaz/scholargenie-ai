@@ -10,9 +10,14 @@ import {
   Users,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { WeeklyPlanPanel } from "@/components/dashboard/weekly-plan-panel";
+import { buildWeeklyPlan } from "@/lib/dashboard/weekly-plan";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { Application } from "@/types/application";
 import type { Profile } from "@/types/database";
+import type { Scholarship } from "@/types/scholarship";
+import type { UserDeadline } from "@/types/deadline";
 
 const features = [
   {
@@ -93,6 +98,36 @@ export default async function DashboardPage() {
     redirect("/onboarding");
   }
 
+  const [
+    { data: scholarships },
+    { data: deadlines },
+    { data: applications },
+    { data: savedRows },
+  ] = await Promise.all([
+    supabase.from("scholarships").select("*").returns<Scholarship[]>(),
+    supabase.from("user_deadlines").select("*").returns<UserDeadline[]>(),
+    supabase.from("applications").select("*").returns<Application[]>(),
+    supabase
+      .from("saved_scholarships")
+      .select("scholarships(name, deadline)")
+      .returns<{ scholarships: { name: string; deadline: string | null } }[]>(),
+  ]);
+
+  const savedScholarshipDeadlines = (savedRows ?? [])
+    .filter((row) => row.scholarships?.deadline)
+    .map((row) => ({
+      name: row.scholarships.name,
+      deadline: row.scholarships.deadline!,
+    }));
+
+  const weeklyActions = buildWeeklyPlan(
+    profile,
+    scholarships ?? [],
+    deadlines ?? [],
+    savedScholarshipDeadlines,
+    applications ?? [],
+  );
+
   const firstName = profile.full_name?.split(" ")[0] ?? "there";
 
   const stats = [
@@ -117,7 +152,7 @@ export default async function DashboardPage() {
             Hi, {firstName}
           </h1>
           <p className="mt-2 text-sm text-muted">
-            Your full study-abroad toolkit is ready — scholarships through SOP drafts.
+            Your copilot for scholarships, applications, and deadlines this week.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -131,6 +166,10 @@ export default async function DashboardPage() {
             <Link href="/onboarding">Edit profile</Link>
           </Button>
         </div>
+      </div>
+
+      <div className="mt-10">
+        <WeeklyPlanPanel actions={weeklyActions} />
       </div>
 
       <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">

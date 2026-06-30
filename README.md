@@ -58,14 +58,15 @@ On every push/PR to `master`, GitHub Actions runs **lint + build**.
 
 To enable **deploy from GitHub Actions** (in addition to Vercel Git deploys):
 
+1. Create a **classic** token at [vercel.com/account/tokens](https://vercel.com/account/tokens) (OAuth CLI login cannot create tokens).
+2. Add `VERCEL_TOKEN=...` to `.env.local` (do not commit).
+3. Run:
+
 ```bash
-# After npx vercel link
-node scripts/setup-github-deploy.mjs
-# Or set VERCEL_TOKEN first:
-# $env:VERCEL_TOKEN="..."; node scripts/setup-github-deploy.mjs
+npm run setup:github-deploy
 ```
 
-See [.github/workflows/README.md](.github/workflows/README.md) for details.
+This sets `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `VERCEL_TOKEN`, and enables `VERCEL_DEPLOY_ENABLED`.
 
 ## Scripts
 

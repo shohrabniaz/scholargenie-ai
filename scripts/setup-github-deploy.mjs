@@ -6,6 +6,7 @@ import { execSync } from "node:child_process";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const projectJsonPath = resolve(projectRoot, ".vercel", "project.json");
+const TOKEN_NAME = "ScholarGenie GitHub Actions";
 
 function readProjectIds() {
   if (!existsSync(projectJsonPath)) {
@@ -20,8 +21,28 @@ function readProjectIds() {
   return { orgId: data.orgId, projectId: data.projectId };
 }
 
-function gh(args) {
-  execSync(`gh ${args}`, { stdio: "inherit", cwd: projectRoot });
+function gh(args, input) {
+  execSync(`gh ${args}`, {
+    cwd: projectRoot,
+    stdio: input ? ["pipe", "inherit", "inherit"] : "inherit",
+    input,
+  });
+}
+
+function resolveVercelToken() {
+  const fromEnv = process.env.VERCEL_TOKEN?.trim();
+  if (fromEnv) return fromEnv;
+
+  try {
+    const output = execSync(
+      `npx vercel tokens add "${TOKEN_NAME}" --format json --non-interactive`,
+      { cwd: projectRoot, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
+    );
+    const parsed = JSON.parse(output.trim());
+    return parsed.token ?? parsed.value ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function main() {
@@ -31,18 +52,18 @@ function main() {
   gh(`secret set VERCEL_ORG_ID --body "${orgId}"`);
   gh(`secret set VERCEL_PROJECT_ID --body "${projectId}"`);
 
-  const token = process.env.VERCEL_TOKEN?.trim();
+  const token = resolveVercelToken();
   if (token) {
-    gh(`secret set VERCEL_TOKEN --body "${token}"`);
-    console.log("Set VERCEL_TOKEN from environment.");
-    console.log("\nEnabling GitHub deploy variable…");
+    gh("secret set VERCEL_TOKEN --body -", token);
+    console.log("Set VERCEL_TOKEN.");
+    console.log("Enabling GitHub deploy variable…");
     gh('variable set VERCEL_DEPLOY_ENABLED --body "true"');
   } else {
-    console.log("\nNext: create a token at https://vercel.com/account/tokens");
-    console.log("Then run:");
-    console.log('  $env:VERCEL_TOKEN="your-token"; node scripts/setup-github-deploy.mjs');
-    console.log("Or: gh secret set VERCEL_TOKEN");
-    console.log("\nLeaving VERCEL_DEPLOY_ENABLED unset (Vercel Git deploys still work).");
+    console.log("\nCould not create VERCEL_TOKEN automatically.");
+    console.log("Vercel OAuth login cannot mint tokens — use a classic token instead:");
+    console.log("  1. https://vercel.com/account/tokens → Create Token");
+    console.log("  2. Add to .env.local: VERCEL_TOKEN=...");
+    console.log("  3. npm run setup:github-deploy");
   }
 
   console.log("\nDone. Push to master to trigger CI/CD.");

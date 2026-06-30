@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import { APP_NAME } from "@/lib/brand";
+import { COUNTRY_PAGES } from "@/lib/constants/country-pages";
 import { MarketingHeader } from "@/components/layout/marketing-header";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { WaitlistForm } from "@/components/marketing/waitlist-form";
@@ -101,6 +102,33 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        <section className="border-t border-border">
+          <div className="mx-auto max-w-5xl px-6 py-20">
+            <p className="text-sm font-medium text-muted">Destinations</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+              Study abroad guides
+            </h2>
+            <p className="mt-3 max-w-xl text-sm text-muted">
+              Free country guides for scholarships, visas, and top student cities.
+            </p>
+            <ul className="mt-8 flex flex-wrap gap-2">
+              {COUNTRY_PAGES.map((country) => (
+                <li key={country.slug}>
+                  <Link
+                    href={`/countries/${country.slug}`}
+                    className="inline-block rounded-full border border-border px-4 py-2 text-sm text-muted transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
+                  >
+                    {country.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Button asChild variant="outline" size="sm" className="mt-6">
+              <Link href="/countries">View all guides</Link>
+            </Button>
           </div>
         </section>
 

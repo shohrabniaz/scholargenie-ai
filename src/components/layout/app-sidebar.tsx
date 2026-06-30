@@ -66,8 +66,8 @@ export function AppSidebar({ email }: AppSidebarProps) {
         <ThemeToggle />
       </div>
 
-      <nav className="flex-1 px-3 pb-3" aria-label="App navigation">
-        <ul className="space-y-0.5">
+      <nav className="flex-1 px-3 pb-3 lg:overflow-visible" aria-label="App navigation">
+        <ul className="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:gap-0 lg:space-y-0.5 lg:overflow-visible lg:pb-0">
           {navItems.map((item) => {
             const active = isActive(pathname, item.href);
             return (
@@ -75,7 +75,7 @@ export function AppSidebar({ email }: AppSidebarProps) {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors",
+                    "flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors lg:shrink",
                     active
                       ? "bg-foreground/[0.06] font-medium text-foreground"
                       : "text-muted hover:bg-foreground/[0.04] hover:text-foreground",
