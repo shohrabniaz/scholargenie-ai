@@ -3,6 +3,10 @@
     {
       "path": "/api/deadlines/remind?cron=1",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/digest/weekly?cron=1",
+      "schedule": "0 9 * * 1"
     }
   ]
 }

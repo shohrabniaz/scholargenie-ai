@@ -12,6 +12,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { WeeklyPlanPanel } from "@/components/dashboard/weekly-plan-panel";
 import { buildWeeklyPlan } from "@/lib/dashboard/weekly-plan";
+import { isResendConfigured } from "@/lib/env/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Application } from "@/types/application";
@@ -169,7 +170,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-10">
-        <WeeklyPlanPanel actions={weeklyActions} />
+        <WeeklyPlanPanel
+          actions={weeklyActions}
+          emailConfigured={isResendConfigured()}
+        />
       </div>
 
       <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -14,7 +14,8 @@
 - Deadline tracker with optional email reminders (Resend)
 - Application tracker with **document checklists** and **visa templates**
 - SOP writer with **AI refine** and CV analyzer
-- SEO **country guides** at `/countries`
+- SEO **country guides** at `/countries` with sitemap
+- **This week** dashboard plan with optional weekly email digest
 
 ## Stack
 
@@ -77,6 +78,7 @@ This sets `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `VERCEL_TOKEN`, and enables `VER
 | `npm run db:seed` | Seed scholarships + universities + professors |
 | `npm run db:seed-more` | Add extra dataset rows |
 | `npm run db:seed-phase5` | Add phase-5 expansion rows |
+| `npm run db:seed-phase11` | Add cyber/AI/DS-focused scholarships and professors |
 | `npm run vercel:env` | Push `.env.local` keys to Vercel |
 | `node scripts/setup-github-deploy.mjs` | Configure GitHub Actions Vercel deploy |
 

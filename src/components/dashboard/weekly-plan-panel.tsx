@@ -1,15 +1,20 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { EmailWeeklyPlanButton } from "@/components/dashboard/email-weekly-plan-button";
 import type { WeeklyAction } from "@/lib/dashboard/weekly-plan";
 
 type WeeklyPlanPanelProps = {
   actions: WeeklyAction[];
+  emailConfigured: boolean;
 };
 
-export function WeeklyPlanPanel({ actions }: WeeklyPlanPanelProps) {
+export function WeeklyPlanPanel({
+  actions,
+  emailConfigured,
+}: WeeklyPlanPanelProps) {
   return (
     <section aria-labelledby="weekly-plan-heading">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 id="weekly-plan-heading" className="text-sm font-medium text-muted">
             This week
@@ -18,12 +23,15 @@ export function WeeklyPlanPanel({ actions }: WeeklyPlanPanelProps) {
             Prioritized actions from your matches, deadlines, and applications.
           </p>
         </div>
-        <Link
-          href="/advisor"
-          className="hidden text-xs text-muted transition-colors hover:text-foreground sm:inline"
-        >
-          Ask advisor
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/advisor"
+            className="text-xs text-muted transition-colors hover:text-foreground"
+          >
+            Ask advisor
+          </Link>
+          <EmailWeeklyPlanButton emailConfigured={emailConfigured} />
+        </div>
       </div>
 
       <ol className="mt-4 space-y-2">
