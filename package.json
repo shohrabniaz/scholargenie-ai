@@ -15,6 +15,7 @@
     "auth:confirm": "node scripts/confirm-user.mjs",
     "setup:production": "node scripts/setup-production.mjs",
     "check:setup": "node scripts/check-setup.mjs",
+    "bootstrap:supabase": "node scripts/bootstrap-supabase.mjs",
     "vercel:env": "node scripts/sync-vercel-env.mjs",
     "setup:github-deploy": "node scripts/setup-github-deploy.mjs"
   },

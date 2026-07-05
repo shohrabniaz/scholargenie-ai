@@ -71,7 +71,15 @@ This sets `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `VERCEL_TOKEN`, and enables `VER
 
 ### Supabase recovery
 
-If `npm run check:setup` reports **Supabase unreachable**:
+If `npm run check:setup` reports **Supabase unreachable**, the project was deleted or paused. Recreate it in one command:
+
+```bash
+# 1. Create token at https://supabase.com/dashboard/account/tokens
+# 2. Run bootstrap (creates project, migrates, seeds, syncs Vercel):
+$env:SUPABASE_ACCESS_TOKEN="sbp_your_token"; npm run bootstrap:supabase
+```
+
+Manual recovery:
 
 1. Open [supabase.com/dashboard](https://supabase.com/dashboard) — restore a paused project or create a new one.
 2. Update `.env.local` with the new `NEXT_PUBLIC_SUPABASE_URL` and keys.
