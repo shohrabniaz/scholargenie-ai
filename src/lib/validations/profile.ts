@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DESTINATION_COUNTRIES } from "@/lib/constants/countries";
 
 export const DEGREE_OPTIONS = [
   { value: "bsc", label: "Bachelor's (BSc / BA)" },
@@ -7,17 +8,7 @@ export const DEGREE_OPTIONS = [
   { value: "other", label: "Other" },
 ] as const;
 
-export const COUNTRY_OPTIONS = [
-  "Australia",
-  "Canada",
-  "United Kingdom",
-  "United States",
-  "Germany",
-  "New Zealand",
-  "Netherlands",
-  "Sweden",
-  "Other",
-] as const;
+export const COUNTRY_OPTIONS = [...DESTINATION_COUNTRIES, "Other"] as const;
 
 export const HOME_COUNTRY_OPTIONS = [
   "Bangladesh",

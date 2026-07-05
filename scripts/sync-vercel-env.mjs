@@ -14,6 +14,10 @@ const SYNC_KEYS = [
   "SUPABASE_DB_PASSWORD",
   "CRON_SECRET",
   "NEXT_PUBLIC_SITE_URL",
+  "OPENAI_API_KEY",
+  "OPENAI_MODEL",
+  "RESEND_API_KEY",
+  "RESEND_FROM_EMAIL",
 ];
 
 function parseEnvFile(path) {

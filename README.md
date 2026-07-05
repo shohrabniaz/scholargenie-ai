@@ -69,10 +69,21 @@ npm run setup:github-deploy
 
 This sets `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `VERCEL_TOKEN`, and enables `VERCEL_DEPLOY_ENABLED`.
 
+### Supabase recovery
+
+If `npm run check:setup` reports **Supabase unreachable**:
+
+1. Open [supabase.com/dashboard](https://supabase.com/dashboard) — restore a paused project or create a new one.
+2. Update `.env.local` with the new `NEXT_PUBLIC_SUPABASE_URL` and keys.
+3. Run `npm run db:migrate` then all seed scripts.
+4. Set auth URLs to your Vercel domain (`/auth/callback`).
+5. `npm run vercel:env https://scholargenie-ai.vercel.app`
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
+| `npm run check:setup` | Verify env vars and Supabase connectivity |
 | `npm run dev` | Dev server |
 | `npm run db:migrate` | Apply SQL migrations |
 | `npm run db:seed` | Seed scholarships + universities + professors |

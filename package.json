@@ -14,6 +14,7 @@
     "db:seed-phase11": "node scripts/seed-phase11.mjs",
     "auth:confirm": "node scripts/confirm-user.mjs",
     "setup:production": "node scripts/setup-production.mjs",
+    "check:setup": "node scripts/check-setup.mjs",
     "vercel:env": "node scripts/sync-vercel-env.mjs",
     "setup:github-deploy": "node scripts/setup-github-deploy.mjs"
   },

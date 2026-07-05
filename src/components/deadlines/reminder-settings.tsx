@@ -91,7 +91,7 @@ export function ReminderSettings({
           <p className="font-medium text-foreground">Email reminders</p>
           <p className="mt-1 text-sm text-muted">
             {emailConfigured
-              ? "Daily digest for deadlines within your chosen window."
+              ? "Daily deadline digests plus your Monday weekly action plan."
               : "Add RESEND_API_KEY to enable email reminders."}
           </p>
         </div>

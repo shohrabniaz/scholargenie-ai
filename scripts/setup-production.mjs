@@ -40,11 +40,16 @@ ScholarGenie AI — production setup
 
 3. Optional integrations
    - OPENAI_API_KEY — GPT advisor
-   - RESEND_API_KEY + RESEND_FROM_EMAIL — deadline emails
-   - SUPABASE_SERVICE_ROLE_KEY — cron digest to all opted-in users
+   - RESEND_API_KEY + RESEND_FROM_EMAIL — deadline + weekly digest emails
+   - SUPABASE_SERVICE_ROLE_KEY — cron digests to all opted-in users
 
-4. Database (if not migrated)
+4. Verify setup
+   npm run check:setup
+
+5. Database (if not migrated)
    npm run db:migrate
    npm run db:seed
    npm run db:seed-more
+   npm run db:seed-phase5
+   npm run db:seed-phase11
 `);

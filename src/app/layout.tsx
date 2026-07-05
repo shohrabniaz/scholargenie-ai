@@ -20,6 +20,16 @@ export const metadata: Metadata = {
   },
   description:
     "Find scholarships, universities, and professors matched to your profile. Free for international students.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://scholargenie-ai.vercel.app",
+  ),
+  openGraph: {
+    title: "ScholarGenie AI — Your AI Study Abroad Copilot",
+    description:
+      "Scholarship matches, universities, professors, and a weekly action plan — free for international students.",
+    siteName: "ScholarGenie AI",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
