@@ -20,21 +20,30 @@ export function buildNotificationDrafts(
   scholarships: Scholarship[],
   deadlines: UserDeadline[],
   savedScholarshipDeadlines: { name: string; deadline: string }[],
+  savedScholarshipIds: string[] = [],
 ): NotificationDraft[] {
   const drafts: NotificationDraft[] = [];
+  const alertsEnabled = profile.match_alerts_enabled !== false;
+  const savedSet = new Set(savedScholarshipIds);
 
-  const top = scholarships
-    .map((s) => ({ s, score: computeMatchScore(profile, s) ?? 0 }))
-    .filter((t) => t.score >= 70)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3);
+  if (alertsEnabled) {
+    const top = scholarships
+      .map((s) => ({ s, score: computeMatchScore(profile, s) ?? 0 }))
+      .filter((t) => t.score >= 70)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
 
-  for (const { s, score } of top) {
-    drafts.push({
-      title: `${score}% scholarship match`,
-      body: s.name,
-      href: "/scholarships",
-    });
+    for (const { s, score } of top) {
+      // Prefer alerting on high matches that aren't saved yet
+      if (savedSet.has(s.id) && score < 85) continue;
+      drafts.push({
+        title: savedSet.has(s.id)
+          ? `${score}% match — still on your list`
+          : `New ${score}% scholarship match`,
+        body: s.name,
+        href: "/scholarships",
+      });
+    }
   }
 
   for (const row of savedScholarshipDeadlines) {

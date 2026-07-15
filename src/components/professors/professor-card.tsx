@@ -3,6 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SaveProfessorButton } from "@/components/professors/save-professor-button";
 import { OutreachDraft } from "@/components/professors/outreach-draft";
+import {
+  OutreachStatusSelect,
+  type OutreachStatus,
+} from "@/components/professors/outreach-status-select";
 import type { Profile } from "@/types/database";
 import type { ProfessorWithUniversity } from "@/types/professor";
 
@@ -11,6 +15,7 @@ type ProfessorCardProps = {
   matchScore?: number | null;
   saved?: boolean;
   profile?: Profile | null;
+  outreachStatus?: OutreachStatus;
 };
 
 export function ProfessorCard({
@@ -18,6 +23,7 @@ export function ProfessorCard({
   matchScore,
   saved = false,
   profile,
+  outreachStatus = "not_sent",
 }: ProfessorCardProps) {
   const university = professor.universities;
 
@@ -73,7 +79,19 @@ export function ProfessorCard({
           </div>
 
           {profile?.onboarding_completed ? (
-            <OutreachDraft profile={profile} professor={professor} />
+            <>
+              <OutreachDraft profile={profile} professor={professor} />
+              <OutreachStatusSelect
+                professorId={professor.id}
+                initialStatus={outreachStatus}
+                enabled={saved}
+              />
+              {!saved ? (
+                <p className="mt-2 text-xs text-muted">
+                  Save this professor to track outreach status.
+                </p>
+              ) : null}
+            </>
           ) : null}
         </div>
         <SaveProfessorButton professorId={professor.id} initiallySaved={saved} />

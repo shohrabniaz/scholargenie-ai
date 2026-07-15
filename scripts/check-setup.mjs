@@ -82,7 +82,10 @@ async function main() {
   const optional = [
     "SUPABASE_SERVICE_ROLE_KEY",
     "RESEND_API_KEY",
+    "RESEND_FROM_EMAIL",
     "OPENAI_API_KEY",
+    "NEXT_PUBLIC_POSTHOG_KEY",
+    "NEXT_PUBLIC_POSTHOG_HOST",
     "VERCEL_TOKEN",
   ];
 

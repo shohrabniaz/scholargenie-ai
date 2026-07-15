@@ -12,17 +12,41 @@ export type WeeklyAction = {
   urgency: "high" | "medium";
 };
 
+export type TopScholarshipMatch = {
+  scholarship: Scholarship;
+  score: number;
+};
+
 function daysUntil(date: string) {
   return Math.ceil(
     (new Date(date).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
   );
 }
 
-function checklistProgress(app: Application): number {
+function checklistProgress(app: Application): { percent: number; nextItem: string | null } {
   const items = parseChecklist(app.checklist, app.kind);
-  if (items.length === 0) return 0;
+  if (items.length === 0) return { percent: 0, nextItem: null };
   const done = items.filter((item) => item.done).length;
-  return Math.round((done / items.length) * 100);
+  const next = items.find((item) => !item.done);
+  return {
+    percent: Math.round((done / items.length) * 100),
+    nextItem: next?.label ?? null,
+  };
+}
+
+export function getTopScholarshipMatches(
+  profile: Profile,
+  scholarships: Scholarship[],
+  limit = 3,
+): TopScholarshipMatch[] {
+  return scholarships
+    .map((scholarship) => ({
+      scholarship,
+      score: computeMatchScore(profile, scholarship) ?? 0,
+    }))
+    .filter((row) => row.score >= 65)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
 export function buildWeeklyPlan(
@@ -34,6 +58,7 @@ export function buildWeeklyPlan(
 ): WeeklyAction[] {
   const actions: WeeklyAction[] = [];
 
+  // Priority 1: deadlines within 14 days
   const allDeadlines = [
     ...savedScholarshipDeadlines.map((row) => ({
       title: row.name,
@@ -59,14 +84,27 @@ export function buildWeeklyPlan(
     });
   }
 
-  const topMatches = scholarships
-    .map((scholarship) => ({
-      scholarship,
-      score: computeMatchScore(profile, scholarship) ?? 0,
-    }))
-    .filter((row) => row.score >= 65)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3);
+  // Priority 2: incomplete checklist items (progress coach)
+  const preparing = applications.filter(
+    (app) =>
+      app.status === "preparing" ||
+      app.status === "researching" ||
+      app.status === "submitted",
+  );
+
+  for (const app of preparing) {
+    const { percent, nextItem } = checklistProgress(app);
+    if (percent < 100 && nextItem) {
+      actions.push({
+        title: percent === 0 ? "Start application checklist" : `Next: ${nextItem}`,
+        detail: `${app.title} (${percent}% done)`,
+        href: "/applications",
+        urgency: percent < 40 ? "high" : "medium",
+      });
+    }
+  }
+
+  const topMatches = getTopScholarshipMatches(profile, scholarships, 3);
 
   for (const { scholarship, score } of topMatches) {
     actions.push({
@@ -77,30 +115,22 @@ export function buildWeeklyPlan(
     });
   }
 
-  const preparing = applications.filter(
-    (app) => app.status === "preparing" || app.status === "researching",
-  );
-
-  for (const app of preparing.slice(0, 2)) {
-    const progress = checklistProgress(app);
-    if (progress < 100) {
-      actions.push({
-        title: progress === 0 ? "Start application checklist" : `Checklist ${progress}% complete`,
-        detail: app.title,
-        href: "/applications",
-        urgency: progress < 40 ? "high" : "medium",
-      });
-    }
-  }
-
+  // Priority: track first app / outreach
   if (applications.length === 0 && topMatches.length > 0) {
     actions.push({
       title: "Track your first application",
       detail: `Start with ${topMatches[0].scholarship.name}`,
       href: "/scholarships",
-      urgency: "medium",
+      urgency: "high",
     });
   }
+
+  actions.push({
+    title: "Email 2–3 professors",
+    detail: "Use outreach drafts on Professors — mark Sent when you hit send",
+    href: "/professors",
+    urgency: "medium",
+  });
 
   if (actions.length === 0) {
     actions.push({

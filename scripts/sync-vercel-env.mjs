@@ -18,6 +18,8 @@ const SYNC_KEYS = [
   "OPENAI_MODEL",
   "RESEND_API_KEY",
   "RESEND_FROM_EMAIL",
+  "NEXT_PUBLIC_POSTHOG_KEY",
+  "NEXT_PUBLIC_POSTHOG_HOST",
 ];
 
 function parseEnvFile(path) {

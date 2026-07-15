@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProfessorCard } from "@/components/professors/professor-card";
 import { ProfessorFilters } from "@/components/professors/professor-filters";
 import { computeProfessorScore } from "@/lib/matching/professor-score";
+import type { OutreachStatus } from "@/components/professors/outreach-status-select";
 import type { Profile } from "@/types/database";
 import type { ProfessorWithUniversity } from "@/types/professor";
 
@@ -26,7 +27,10 @@ export default async function ProfessorsPage({ searchParams }: PageProps) {
     : Promise.resolve({ data: null, error: null });
 
   const savedQuery = user
-    ? supabase.from("saved_professors").select("professor_id").eq("user_id", user.id)
+    ? supabase
+        .from("saved_professors")
+        .select("professor_id, outreach_status")
+        .eq("user_id", user.id)
     : Promise.resolve({ data: [], error: null });
 
   const professorQuery = supabase
@@ -37,12 +41,18 @@ export default async function ProfessorsPage({ searchParams }: PageProps) {
   const [{ data: professors, error }, { data: profile }, { data: savedRows }] =
     await Promise.all([professorQuery.returns<ProfessorWithUniversity[]>(), profileQuery, savedQuery]);
 
-  const savedIds = new Set((savedRows ?? []).map((r) => r.professor_id));
+  const savedMap = new Map(
+    (savedRows ?? []).map((r) => [
+      r.professor_id,
+      (r.outreach_status as OutreachStatus | undefined) ?? "not_sent",
+    ]),
+  );
 
   let items = (professors ?? []).map((p) => ({
     professor: p,
     matchScore: computeProfessorScore(profile, p),
-    saved: savedIds.has(p.id),
+    saved: savedMap.has(p.id),
+    outreachStatus: savedMap.get(p.id) ?? "not_sent",
   }));
 
   if (params.country) {
@@ -98,13 +108,14 @@ export default async function ProfessorsPage({ searchParams }: PageProps) {
               : "No professors match your filters."}
           </li>
         ) : (
-          items.map(({ professor, matchScore, saved }) => (
+          items.map(({ professor, matchScore, saved, outreachStatus }) => (
             <li key={professor.id}>
               <ProfessorCard
                 professor={professor}
                 matchScore={matchScore}
                 saved={saved}
                 profile={profile}
+                outreachStatus={outreachStatus as OutreachStatus}
               />
             </li>
           ))

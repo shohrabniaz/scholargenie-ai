@@ -14,6 +14,7 @@ export type Profile = {
   onboarding_completed: boolean;
   deadline_reminders_enabled: boolean;
   reminder_lead_days: number;
+  match_alerts_enabled?: boolean;
   created_at: string;
   updated_at: string;
 };

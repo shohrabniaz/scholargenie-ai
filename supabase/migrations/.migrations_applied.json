@@ -8,5 +8,6 @@
   "007_reminder_prefs.sql",
   "008_applications.sql",
   "009_advisor_notifications.sql",
-  "010_application_checklist.sql"
+  "010_application_checklist.sql",
+  "011_retention_and_diff.sql"
 ]

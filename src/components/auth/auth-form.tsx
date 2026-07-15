@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
 import { getAuthCallbackUrl } from "@/lib/supabase/site-url";
+import { AnalyticsEvents, track, identifyUser } from "@/lib/analytics/events";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,6 +42,10 @@ async function signInAndRedirect(email: string, password: string) {
 
   if (error || !data.session) {
     throw new Error(error?.message ?? "Could not sign in");
+  }
+
+  if (data.user) {
+    identifyUser(data.user.id, { email: data.user.email });
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -158,6 +163,7 @@ export function AuthForm({
       };
 
       if (apiRes.ok && apiData.ok) {
+        track(AnalyticsEvents.signup, { method: "api" });
         try {
           await signInAndRedirect(data.email, data.password);
           return;

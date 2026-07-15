@@ -6,13 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateSopDraft } from "@/lib/tools/sop-writer";
+import { createClient } from "@/lib/supabase/client";
+import { AnalyticsEvents, track } from "@/lib/analytics/events";
 import type { Profile } from "@/types/database";
+
+type SopDraftRow = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+};
 
 type SopWriterProps = {
   profile: Profile;
+  initialDrafts?: SopDraftRow[];
 };
 
-export function SopWriter({ profile }: SopWriterProps) {
+export function SopWriter({ profile, initialDrafts = [] }: SopWriterProps) {
   const [motivation, setMotivation] = useState("");
   const [experience, setExperience] = useState("");
   const [goals, setGoals] = useState("");
@@ -20,7 +30,9 @@ export function SopWriter({ profile }: SopWriterProps) {
   const [draft, setDraft] = useState<string | null>(null);
   const [refinePrompt, setRefinePrompt] = useState("Make the opening stronger and tighten the conclusion.");
   const [refining, setRefining] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [history, setHistory] = useState<SopDraftRow[]>(initialDrafts);
 
   function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
@@ -50,6 +62,32 @@ export function SopWriter({ profile }: SopWriterProps) {
     await navigator.clipboard.writeText(draft);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function handleSave() {
+    if (!draft || saving) return;
+    setSaving(true);
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setSaving(false);
+      return;
+    }
+
+    const title = `SOP · ${new Date().toLocaleDateString()}`;
+    const { data, error } = await supabase
+      .from("sop_drafts")
+      .insert({ user_id: user.id, title, content: draft })
+      .select("id, title, content, created_at")
+      .single();
+
+    if (!error && data) {
+      setHistory((prev) => [data as SopDraftRow, ...prev]);
+      track(AnalyticsEvents.sopDraftSaved, { length: draft.length });
+    }
+    setSaving(false);
   }
 
   return (
@@ -98,14 +136,19 @@ export function SopWriter({ profile }: SopWriterProps) {
         <div className="rounded-2xl border border-border bg-surface p-5">
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-medium text-foreground">Your SOP draft</p>
-            <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
-              {copied ? (
-                <Check className="h-3.5 w-3.5" aria-hidden />
-              ) : (
-                <Copy className="h-3.5 w-3.5" aria-hidden />
-              )}
-              {copied ? "Copied" : "Copy"}
-            </Button>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" size="sm" onClick={handleSave} disabled={saving}>
+                {saving ? "Saving…" : "Save version"}
+              </Button>
+              <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
+                {copied ? (
+                  <Check className="h-3.5 w-3.5" aria-hidden />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" aria-hidden />
+                )}
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </div>
           </div>
           <pre className="mt-4 max-h-[480px] overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-foreground">
             {draft}
@@ -128,6 +171,31 @@ export function SopWriter({ profile }: SopWriterProps) {
             </Button>
           </div>
         </div>
+      ) : null}
+
+      {history.length > 0 ? (
+        <section aria-labelledby="sop-history-heading">
+          <h2 id="sop-history-heading" className="text-sm font-medium text-muted">
+            Version history
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {history.map((row) => (
+              <li key={row.id}>
+                <button
+                  type="button"
+                  onClick={() => setDraft(row.content)}
+                  className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-left transition-colors hover:bg-background"
+                >
+                  <p className="text-sm font-medium text-foreground">{row.title}</p>
+                  <p className="mt-1 text-xs text-muted">
+                    {new Date(row.created_at).toLocaleString()} ·{" "}
+                    {row.content.slice(0, 80)}…
+                  </p>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
     </div>
   );

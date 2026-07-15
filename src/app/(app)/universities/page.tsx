@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { UniversityCard } from "@/components/universities/university-card";
 import { UniversityFilters } from "@/components/universities/university-filters";
@@ -84,6 +85,14 @@ export default async function UniversitiesPage({ searchParams }: PageProps) {
             ? `${items.length} universities · ${tierCounts.safe} safe · ${tierCounts.target} target · ${tierCounts.ambitious} ambitious`
             : `${items.length} universities · complete your profile for match tiers`}
       </p>
+      <div className="mt-3">
+        <Link
+          href="/universities/compare"
+          className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          Compare universities →
+        </Link>
+      </div>
 
       <div className="mt-8">
         <Suspense

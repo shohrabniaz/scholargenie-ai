@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { AnalyticsEvents, track } from "@/lib/analytics/events";
 
 const STEPS = [
   { id: 1, title: "About you" },
@@ -117,6 +118,11 @@ export function OnboardingWizard({
       setLoading(false);
       return;
     }
+
+    track(AnalyticsEvents.onboardingCompleted, {
+      field: data.field_of_study,
+      degree: data.degree_level,
+    });
 
     router.push("/dashboard");
     router.refresh();

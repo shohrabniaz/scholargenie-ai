@@ -11,13 +11,18 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { WeeklyPlanPanel } from "@/components/dashboard/weekly-plan-panel";
-import { buildWeeklyPlan } from "@/lib/dashboard/weekly-plan";
+import { TopMatchesPanel } from "@/components/dashboard/top-matches-panel";
+import { ScoreGapPanel } from "@/components/dashboard/score-gap-panel";
+import { MatchAlertsToggle } from "@/components/dashboard/match-alerts-toggle";
+import { buildWeeklyPlan, getTopScholarshipMatches } from "@/lib/dashboard/weekly-plan";
+import { analyzeScoreGaps } from "@/lib/matching/score-gap";
 import { isResendConfigured } from "@/lib/env/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Application } from "@/types/application";
 import type { Profile } from "@/types/database";
 import type { Scholarship } from "@/types/scholarship";
+import type { University } from "@/types/university";
 import type { UserDeadline } from "@/types/deadline";
 
 const features = [
@@ -101,11 +106,13 @@ export default async function DashboardPage() {
 
   const [
     { data: scholarships },
+    { data: universities },
     { data: deadlines },
     { data: applications },
     { data: savedRows },
   ] = await Promise.all([
     supabase.from("scholarships").select("*").returns<Scholarship[]>(),
+    supabase.from("universities").select("*").returns<University[]>(),
     supabase.from("user_deadlines").select("*").returns<UserDeadline[]>(),
     supabase.from("applications").select("*").returns<Application[]>(),
     supabase
@@ -127,6 +134,15 @@ export default async function DashboardPage() {
     deadlines ?? [],
     savedScholarshipDeadlines,
     applications ?? [],
+  );
+
+  const topMatches = getTopScholarshipMatches(profile, scholarships ?? [], 3);
+  const trackedScholarshipIds = (applications ?? [])
+    .map((a) => a.scholarship_id)
+    .filter(Boolean) as string[];
+  const { gaps: scoreGaps, summary: scoreGapSummary } = analyzeScoreGaps(
+    profile,
+    universities ?? [],
   );
 
   const firstName = profile.full_name?.split(" ")[0] ?? "there";
@@ -170,10 +186,22 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-10">
+        <MatchAlertsToggle initiallyEnabled={profile.match_alerts_enabled !== false} />
+      </div>
+
+      <div className="mt-10">
         <WeeklyPlanPanel
           actions={weeklyActions}
           emailConfigured={isResendConfigured()}
         />
+      </div>
+
+      <div className="mt-10">
+        <TopMatchesPanel matches={topMatches} trackedIds={trackedScholarshipIds} />
+      </div>
+
+      <div className="mt-10">
+        <ScoreGapPanel gaps={scoreGaps} summary={scoreGapSummary} />
       </div>
 
       <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">

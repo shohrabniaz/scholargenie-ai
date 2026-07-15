@@ -5,6 +5,7 @@ import { ClipboardPlus, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { defaultChecklist } from "@/lib/applications/checklist";
+import { AnalyticsEvents, track } from "@/lib/analytics/events";
 import type { ApplicationKind } from "@/types/application";
 
 type TrackApplicationButtonProps = {
@@ -49,7 +50,14 @@ export function TrackApplicationButton({
       checklist: defaultChecklist(kind),
     });
 
-    if (!error) setTracked(true);
+    if (!error) {
+      setTracked(true);
+      track(AnalyticsEvents.applicationTracked, {
+        kind,
+        scholarship_id: scholarshipId,
+        university_id: universityId,
+      });
+    }
     setLoading(false);
   }
 

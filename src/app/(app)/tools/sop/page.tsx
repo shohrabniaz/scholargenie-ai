@@ -24,6 +24,13 @@ export default async function SopPage() {
     );
   }
 
+  const { data: drafts } = await supabase
+    .from("sop_drafts")
+    .select("id, title, content, created_at")
+    .eq("user_id", user!.id)
+    .order("created_at", { ascending: false })
+    .limit(20);
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <p className="text-sm text-muted">Tools</p>
@@ -32,7 +39,7 @@ export default async function SopPage() {
         Answer a few prompts and get a structured draft to edit in your own voice.
       </p>
       <div className="mt-8">
-        <SopWriter profile={profile} />
+        <SopWriter profile={profile} initialDrafts={drafts ?? []} />
       </div>
     </div>
   );

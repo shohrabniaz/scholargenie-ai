@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bookmark } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { AnalyticsEvents, track } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
 type SaveScholarshipButtonProps = {
@@ -43,7 +44,10 @@ export function SaveScholarshipButton({
         scholarship_id: scholarshipId,
       });
 
-      if (!error) setSaved(true);
+      if (!error) {
+        setSaved(true);
+        track(AnalyticsEvents.scholarshipSaved, { scholarship_id: scholarshipId });
+      }
     }
 
     setLoading(false);

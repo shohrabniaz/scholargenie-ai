@@ -11,6 +11,7 @@ import {
   DEGREE_OPTIONS,
   HOME_COUNTRY_OPTIONS,
 } from "@/lib/validations/profile";
+import { AnalyticsEvents, track } from "@/lib/analytics/events";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,6 +61,7 @@ export function WaitlistForm() {
 
     setStatus("success");
     setMessage("You're on the list. We'll email you about new scholarships and features.");
+    track(AnalyticsEvents.waitlistJoined);
     reset();
   }
 

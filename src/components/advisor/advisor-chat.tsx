@@ -5,6 +5,7 @@ import { Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { AdvisorMessage, RoadmapStep } from "@/lib/advisor/engine";
+import { AnalyticsEvents, track } from "@/lib/analytics/events";
 import type { Profile } from "@/types/database";
 
 type AdvisorChatProps = {
@@ -72,6 +73,7 @@ export function AdvisorChat({
       }
 
       setMode(data.mode ?? "rules");
+      track(AnalyticsEvents.advisorMessage, { mode: data.mode ?? "rules" });
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: data.reply! },

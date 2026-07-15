@@ -30,8 +30,13 @@ export async function POST() {
     supabase.from("user_deadlines").select("*").returns<UserDeadline[]>(),
     supabase
       .from("saved_scholarships")
-      .select("scholarships(name, deadline)")
-      .returns<{ scholarships: { name: string; deadline: string | null } }[]>(),
+      .select("scholarship_id, scholarships(name, deadline)")
+      .returns<
+        {
+          scholarship_id: string;
+          scholarships: { name: string; deadline: string | null };
+        }[]
+      >(),
     supabase.from("notifications").select("title, body").eq("user_id", user.id),
   ]);
 
@@ -42,11 +47,14 @@ export async function POST() {
       deadline: r.scholarships.deadline!,
     }));
 
+  const savedIds = (savedRes.data ?? []).map((r) => r.scholarship_id);
+
   const drafts = buildNotificationDrafts(
     profile,
     scholarshipsRes.data ?? [],
     deadlinesRes.data ?? [],
     savedDeadlines,
+    savedIds,
   );
 
   const existing = new Set(
