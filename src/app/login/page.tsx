@@ -31,6 +31,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               Sign up
             </Link>
           </p>
+          <p className="mt-4 rounded-xl border border-border bg-surface px-3 py-2 text-xs text-muted">
+            Database was refreshed in July 2026. If your old login fails,{" "}
+            <Link href="/signup" className="text-foreground underline-offset-4 hover:underline">
+              create a new account
+            </Link>
+            .
+          </p>
           <div className="mt-8">
             <AuthForm
               mode="login"

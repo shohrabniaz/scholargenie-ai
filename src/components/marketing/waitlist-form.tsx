@@ -59,18 +59,18 @@ export function WaitlistForm() {
     }
 
     setStatus("success");
-    setMessage("You're on the list. We'll email you when we launch new features.");
+    setMessage("You're on the list. We'll email you about new scholarships and features.");
     reset();
   }
 
   return (
     <div className="mx-auto max-w-md">
-      <p className="text-sm font-medium text-muted">Early access</p>
+      <p className="text-sm font-medium text-muted">Stay in the loop</p>
       <h2 className="mt-2 text-2xl font-semibold tracking-tight">
         Join the waitlist
       </h2>
       <p className="mt-2 text-sm text-muted">
-        Be first to try scholarship matches and the professor finder.
+        The app is live — leave your email for new scholarship drops and product updates.
       </p>
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
         <div className="space-y-2">
