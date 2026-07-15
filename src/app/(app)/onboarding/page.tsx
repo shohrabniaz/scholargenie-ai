@@ -37,6 +37,7 @@ export default async function OnboardingPage() {
   return (
     <div className="page-shell-narrow">
       <OnboardingWizard
+        userId={user.id}
         defaultValues={defaultValues}
         isEdit={profile?.onboarding_completed ?? false}
       />

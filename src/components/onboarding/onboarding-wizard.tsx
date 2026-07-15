@@ -27,11 +27,13 @@ const STEPS = [
 ] as const;
 
 type OnboardingWizardProps = {
+  userId: string;
   defaultValues?: Partial<OnboardingFormData>;
   isEdit?: boolean;
 };
 
 export function OnboardingWizard({
+  userId,
   defaultValues,
   isEdit = false,
 }: OnboardingWizardProps) {
@@ -39,6 +41,7 @@ export function OnboardingWizard({
   const [step, setStep] = useState(1);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const {
     register,
@@ -85,18 +88,11 @@ export function OnboardingWizard({
   async function onSubmit(data: OnboardingFormData) {
     setLoading(true);
     setSubmitError(null);
+    setSaved(false);
 
     const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
-    if (!user) {
-      setSubmitError("You must be signed in to complete onboarding.");
-      setLoading(false);
-      return;
-    }
-
+    // Skip auth.getUser() network round-trip — userId comes from the server page.
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -111,7 +107,7 @@ export function OnboardingWizard({
         preferred_countries: data.preferred_countries,
         onboarding_completed: true,
       })
-      .eq("id", user.id);
+      .eq("id", userId);
 
     if (error) {
       setSubmitError(error.message);
@@ -124,8 +120,17 @@ export function OnboardingWizard({
       degree: data.degree_level,
     });
 
-    router.push("/dashboard");
-    router.refresh();
+    if (isEdit) {
+      setSaved(true);
+      setLoading(false);
+      // Soft refresh profile-dependent pages in the background — don't block the button.
+      router.refresh();
+      return;
+    }
+
+    // Hard navigate so we leave "Saving…" immediately instead of waiting for
+    // the dashboard RSC (scholarships + universities + apps) to finish.
+    window.location.assign("/dashboard");
   }
 
   return (
@@ -304,6 +309,12 @@ export function OnboardingWizard({
               ) : null}
             </fieldset>
           </div>
+        ) : null}
+
+        {saved ? (
+          <p className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground">
+            Profile saved.
+          </p>
         ) : null}
 
         {submitError ? (

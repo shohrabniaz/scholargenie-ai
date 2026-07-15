@@ -67,18 +67,17 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (user && isAppRoute) {
+  if (
+    user &&
+    path.startsWith("/dashboard")
+  ) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("onboarding_completed")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (
-      profile &&
-      !profile.onboarding_completed &&
-      path.startsWith("/dashboard")
-    ) {
+    if (profile && !profile.onboarding_completed) {
       const url = request.nextUrl.clone();
       url.pathname = "/onboarding";
       return NextResponse.redirect(url);

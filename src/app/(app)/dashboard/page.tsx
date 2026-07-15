@@ -111,8 +111,18 @@ export default async function DashboardPage() {
     { data: applications },
     { data: savedRows },
   ] = await Promise.all([
-    supabase.from("scholarships").select("*").returns<Scholarship[]>(),
-    supabase.from("universities").select("*").returns<University[]>(),
+    supabase
+      .from("scholarships")
+      .select(
+        "id, name, country, funding_type, deadline, degree_levels, fields, amount_description",
+      )
+      .returns<Scholarship[]>(),
+    supabase
+      .from("universities")
+      .select(
+        "id, name, country, city, tuition_usd_min, tuition_usd_max, min_gpa, min_ielts, degree_levels, fields",
+      )
+      .returns<University[]>(),
     supabase.from("user_deadlines").select("*").returns<UserDeadline[]>(),
     supabase.from("applications").select("*").returns<Application[]>(),
     supabase
