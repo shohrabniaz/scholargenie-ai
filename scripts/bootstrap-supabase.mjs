@@ -16,7 +16,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const envPath = resolve(projectRoot, ".env.local");
 const siteUrl = "https://scholargenie-ai.vercel.app";
-const projectName = "scholargenie-ai";
 const region = "ap-south-1";
 
 function loadToken() {
@@ -79,30 +78,57 @@ function updateEnvFile(updates) {
   writeFileSync(envPath, content, "utf8");
 }
 
+function isActiveStatus(status) {
+  const s = String(status ?? "").toUpperCase();
+  return (
+    s === "ACTIVE_HEALTHY" ||
+    s === "ACTIVE" ||
+    s === "COMING_UP" ||
+    s === "RESTORING" ||
+    s === "UNKNOWN"
+  );
+}
+
 async function waitForHealthy(token, ref) {
-  const deadline = Date.now() + 10 * 60 * 1000;
+  const deadline = Date.now() + 12 * 60 * 1000;
   while (Date.now() < deadline) {
-    const health = await api(token, `/projects/${ref}/health`);
-    const db = health?.find?.((h) => h.name === "database") ?? health?.database;
-    const healthy = Array.isArray(health)
-      ? health.every((h) => h.status === "ACTIVE_HEALTHY" || h.healthy === true)
-      : db?.status === "ACTIVE_HEALTHY" || db?.healthy === true;
+    try {
+      const health = await api(token, `/projects/${ref}/health?services=db`);
+      const items = Array.isArray(health) ? health : [health];
+      const healthy = items.some(
+        (h) =>
+          h?.status === "ACTIVE_HEALTHY" ||
+          h?.healthy === true ||
+          h?.name === "db" && String(h?.status ?? "").includes("ACTIVE"),
+      );
+      if (healthy) return;
+    } catch {
+      // Project may still be provisioning — also check project status
+    }
 
-    if (healthy) return;
+    try {
+      const project = await api(token, `/projects/${ref}`);
+      if (String(project.status ?? "").toUpperCase() === "ACTIVE_HEALTHY") {
+        return;
+      }
+      process.stdout.write(`(${project.status ?? "pending"})`);
+    } catch {
+      process.stdout.write(".");
+    }
 
-    process.stdout.write(".");
     await new Promise((r) => setTimeout(r, 15000));
   }
-  throw new Error("Project did not become healthy within 10 minutes");
+  throw new Error("Project did not become healthy within 12 minutes");
 }
 
 async function getApiKeys(token, ref) {
   const keys = await api(token, `/projects/${ref}/api-keys`);
+  const list = Array.isArray(keys) ? keys : [];
   const anon =
-    keys?.find?.((k) => k.name === "anon" || k.tags?.includes?.("anon"))?.api_key ??
+    list.find((k) => k.name === "anon" || k.tags?.includes?.("anon"))?.api_key ??
     keys?.anon;
   const service =
-    keys?.find?.((k) => k.name === "service_role" || k.tags?.includes?.("service_role"))
+    list.find((k) => k.name === "service_role" || k.tags?.includes?.("service_role"))
       ?.api_key ?? keys?.service_role;
 
   if (!anon) {
@@ -130,6 +156,33 @@ async function configureAuth(token, ref) {
   }
 }
 
+async function restoreIfPossible(token, ref) {
+  try {
+    await api(token, `/projects/${ref}/restore`, { method: "POST", body: "{}" });
+    console.log(`Requested restore for ${ref}`);
+    return true;
+  } catch (error) {
+    console.log(
+      `Could not restore ${ref}:`,
+      error instanceof Error ? error.message : error,
+    );
+    return false;
+  }
+}
+
+async function createProject(token, org, name, dbPassword) {
+  return api(token, "/projects", {
+    method: "POST",
+    body: JSON.stringify({
+      name,
+      organization_slug: org.slug ?? org.id,
+      db_pass: dbPassword,
+      region,
+      desired_instance_size: "micro",
+    }),
+  });
+}
+
 function run(cmd) {
   console.log(`\n> ${cmd}`);
   execSync(cmd, { cwd: projectRoot, stdio: "inherit", shell: true });
@@ -146,54 +199,103 @@ async function main() {
   const org = orgs[0];
   console.log(`Using organization: ${org.name} (${org.slug ?? org.id})`);
 
-  const dbPassword = generateDbPassword();
+  const projects = await api(token, "/projects");
+  console.log(
+    `Found ${projects.length} project(s):`,
+    projects.map((p) => `${p.name}:${p.status}`).join(", ") || "(none)",
+  );
 
-  console.log(`Creating project "${projectName}" in ${region}...`);
-  let project;
-  try {
-    project = await api(token, "/projects", {
-      method: "POST",
-      body: JSON.stringify({
-        name: projectName,
-        organization_slug: org.slug ?? org.id,
-        db_pass: dbPassword,
-        region,
-      }),
-    });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (message.includes("already exists") || message.includes("duplicate")) {
-      console.log("Project may already exist — listing projects...");
-      const projects = await api(token, "/projects");
-      project = projects.find((p) => p.name === projectName);
-      if (!project) throw error;
-      console.log(`Found existing project: ${project.id ?? project.ref}`);
-    } else {
-      throw error;
+  const dbPassword = generateDbPassword();
+  let project = null;
+  let passwordKnown = true;
+
+  // Prefer an already-active project named scholargenie-ai
+  const existingActive = projects.find(
+    (p) =>
+      (p.name === "scholargenie-ai" || p.name === "scholargenie-ai-prod") &&
+      isActiveStatus(p.status) &&
+      String(p.status).toUpperCase() === "ACTIVE_HEALTHY",
+  );
+
+  if (existingActive) {
+    project = existingActive;
+    passwordKnown = false;
+    console.log(`Reusing healthy project: ${project.id ?? project.ref}`);
+  } else {
+    // Try restore inactive scholargenie-ai first
+    const inactive = projects.find((p) => p.name === "scholargenie-ai");
+    if (inactive && String(inactive.status).toUpperCase().includes("INACTIVE")) {
+      const restored = await restoreIfPossible(token, inactive.id ?? inactive.ref);
+      if (restored) {
+        project = inactive;
+        passwordKnown = false;
+      }
+    }
+  }
+
+  if (!project) {
+    const name = projects.some((p) => p.name === "scholargenie-ai")
+      ? `scholargenie-ai-${Date.now().toString(36).slice(-4)}`
+      : "scholargenie-ai";
+
+    console.log(`Creating project "${name}" in ${region}...`);
+    try {
+      project = await createProject(token, org, name, dbPassword);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      // Fallback if org slug field differs
+      if (message.includes("organization")) {
+        project = await api(token, "/projects", {
+          method: "POST",
+          body: JSON.stringify({
+            name,
+            organization_id: org.id,
+            db_pass: dbPassword,
+            region,
+          }),
+        });
+      } else {
+        throw error;
+      }
     }
   }
 
   const ref = project.ref ?? project.id;
   console.log(`Project ref: ${ref}`);
-  console.log("Waiting for project to become healthy (up to 10 min)...");
+  console.log("Waiting for project to become healthy (up to 12 min)...");
   await waitForHealthy(token, ref);
   console.log("\nProject is healthy.");
 
   const { anon, service } = await getApiKeys(token, ref);
   const supabaseUrl = `https://${ref}.supabase.co`;
 
-  updateEnvFile({
+  const envUpdates = {
     NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: anon,
-    SUPABASE_DB_PASSWORD: dbPassword,
     SUPABASE_DB_REGION: region,
     SUPABASE_DB_POOLER: "aws-1",
     NEXT_PUBLIC_SITE_URL: siteUrl,
     ...(service ? { SUPABASE_SERVICE_ROLE_KEY: service } : {}),
-  });
+  };
+  if (passwordKnown) {
+    envUpdates.SUPABASE_DB_PASSWORD = dbPassword;
+  }
+  updateEnvFile(envUpdates);
   console.log(`Updated ${envPath}`);
 
+  if (!passwordKnown) {
+    console.warn(
+      "Reused an existing project — keep existing SUPABASE_DB_PASSWORD or set the known DB password in .env.local before migrations.",
+    );
+  }
+
   await configureAuth(token, ref);
+
+  // Reset migrations ledger for a brand-new project
+  if (passwordKnown) {
+    const ledgerPath = resolve(projectRoot, "supabase/migrations/.migrations_applied.json");
+    writeFileSync(ledgerPath, "[]\n", "utf8");
+  }
 
   run("npm run db:migrate");
   run("npm run db:seed");
