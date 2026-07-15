@@ -30,7 +30,7 @@ export default async function UniversityComparePage({ searchParams }: PageProps)
     .slice(0, 3);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
+    <div className="page-shell-wide">
       <p className="text-sm text-muted">
         <Link href="/universities" className="hover:text-foreground">
           Universities

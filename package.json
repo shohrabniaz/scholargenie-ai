@@ -18,6 +18,7 @@
     "check:setup": "node scripts/check-setup.mjs",
     "bootstrap:supabase": "node scripts/bootstrap-supabase.mjs",
     "vercel:env": "node scripts/sync-vercel-env.mjs",
+    "setup:auth-smtp": "node scripts/configure-auth-smtp.mjs",
     "setup:github-deploy": "node scripts/setup-github-deploy.mjs"
   },
   "dependencies": {

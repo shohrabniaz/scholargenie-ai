@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
-import { getAuthCallbackUrl } from "@/lib/supabase/site-url";
 import { AnalyticsEvents, track, identifyUser } from "@/lib/analytics/events";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +27,7 @@ type AuthFormProps = {
 function friendlyAuthError(message: string) {
   const lower = message.toLowerCase();
   if (lower.includes("email not confirmed") || lower.includes("not confirmed")) {
-    return "Your email is not verified yet. Use the button below to verify instantly.";
+    return "Your email is not verified yet. Request a ScholarGenie verification email below, or verify instantly.";
   }
   if (lower.includes("invalid login credentials")) {
     return "Incorrect email or password. Try again or reset your password.";
@@ -98,7 +97,7 @@ export function AuthForm({
       return;
     }
 
-    if (mode === "login" && password) {
+    if (password) {
       try {
         await signInAndRedirect(email, password);
         return;
@@ -114,28 +113,42 @@ export function AuthForm({
     setLoading(false);
   }
 
-  async function resendConfirmation() {
+  async function sendVerificationMail() {
     const email = savedEmail ?? getValues("email");
     if (!email) return;
 
     setLoading(true);
     setError(null);
-    const supabase = createClient();
-    const { error: resendError } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: {
-        emailRedirectTo: getAuthCallbackUrl("/onboarding"),
-      },
+
+    const res = await fetch("/api/auth/send-verification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, mode: "email" }),
     });
 
-    if (resendError) {
-      setError(
-        "Supabase could not send email. Use “Verify my email now” instead — Supabase’s built-in mail often does not deliver.",
+    const data = (await res.json()) as {
+      error?: string;
+      ok?: boolean;
+      note?: string;
+      channel?: string;
+      method?: string;
+    };
+
+    if (!res.ok) {
+      setError(data.error ?? "Could not send verification email.");
+      setLoading(false);
+      return;
+    }
+
+    if (data.method === "instant") {
+      setMessage(
+        data.note ??
+          "Email verified instantly. You can log in now. Add RESEND_API_KEY for branded verification emails.",
       );
+      setNeedsVerification(false);
     } else {
       setMessage(
-        "If email delivery is enabled, a link was sent. Otherwise use “Verify my email now”.",
+        "We sent a verification email from ScholarGenie AI. Check inbox and spam, then tap the link.",
       );
     }
     setLoading(false);
@@ -168,37 +181,28 @@ export function AuthForm({
           await signInAndRedirect(data.email, data.password);
           return;
         } catch (err) {
-          setError(err instanceof Error ? err.message : "Account created but login failed.");
+          const msg = err instanceof Error ? err.message : "Account created but login failed.";
+          const friendly = friendlyAuthError(msg);
+          setError(friendly);
+          if (friendly.toLowerCase().includes("not verified")) {
+            setNeedsVerification(true);
+          }
           setLoading(false);
           return;
         }
       }
 
-      if (apiRes.status !== 503) {
-        setError(apiData.message ?? apiData.error ?? "Could not create account.");
+      if (apiRes.status === 503) {
+        setNeedsVerification(true);
+        setMessage(
+          "Almost there — tap “Send verification email” or “Verify instantly” to finish.",
+        );
+        setError(apiData.message ?? null);
         setLoading(false);
         return;
       }
 
-      const supabase = createClient();
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          emailRedirectTo: getAuthCallbackUrl("/onboarding"),
-        },
-      });
-
-      if (signUpError) {
-        setError(friendlyAuthError(signUpError.message));
-        setLoading(false);
-        return;
-      }
-
-      setNeedsVerification(true);
-      setMessage(
-        "Account created. Supabase verification emails often do not arrive — tap “Verify my email now” below.",
-      );
+      setError(apiData.message ?? apiData.error ?? "Could not create account.");
       setLoading(false);
       return;
     }
@@ -209,7 +213,7 @@ export function AuthForm({
       const msg = err instanceof Error ? err.message : "Login failed";
       const friendly = friendlyAuthError(msg);
       setError(friendly);
-      if (friendly.includes("not verified")) {
+      if (friendly.toLowerCase().includes("not verified")) {
         setNeedsVerification(true);
       }
       setLoading(false);
@@ -276,18 +280,18 @@ export function AuthForm({
             type="button"
             className="w-full"
             disabled={loading}
-            onClick={verifyEmailNow}
+            onClick={sendVerificationMail}
           >
-            Verify my email now
+            Send verification email
           </Button>
           <Button
             type="button"
             variant="outline"
             className="w-full"
             disabled={loading}
-            onClick={resendConfirmation}
+            onClick={verifyEmailNow}
           >
-            Try sending email again
+            Verify instantly
           </Button>
         </div>
       ) : null}

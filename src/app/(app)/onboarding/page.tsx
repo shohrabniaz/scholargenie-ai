@@ -35,7 +35,7 @@ export default async function OnboardingPage() {
     : undefined;
 
   return (
-    <div className="mx-auto max-w-lg px-6 py-10">
+    <div className="page-shell-narrow">
       <OnboardingWizard
         defaultValues={defaultValues}
         isEdit={profile?.onboarding_completed ?? false}

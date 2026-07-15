@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <>
       <MarketingHeader />
-      <main className="flex flex-1 items-center justify-center px-6 py-20">
+      <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 sm:py-20">
         <div className="w-full max-w-sm">
           <p className="text-sm text-muted">Welcome back</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Log in</h1>

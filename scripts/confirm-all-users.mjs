@@ -61,7 +61,7 @@ async function main() {
   const { rowCount } = await client.query(
     `update auth.users
      set email_confirmed_at = now(),
-         confirmed_at = now()
+         updated_at = now()
      where email_confirmed_at is null`,
   );
 

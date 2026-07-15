@@ -69,7 +69,7 @@ export default async function ProfessorsPage({ searchParams }: PageProps) {
   items.sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0));
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="page-shell">
       <p className="text-sm text-muted">Professors</p>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight">Find supervisors</h1>
       <p className="mt-2 text-sm text-muted">

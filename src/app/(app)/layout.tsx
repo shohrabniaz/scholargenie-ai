@@ -19,7 +19,7 @@ export default async function AppLayout({
   return (
     <div className="flex min-h-screen flex-col bg-background lg:flex-row">
       <AppSidebar email={user.email} />
-      <main className="flex-1">{children}</main>
+      <main className="min-w-0 flex-1 overflow-x-hidden">{children}</main>
     </div>
   );
 }

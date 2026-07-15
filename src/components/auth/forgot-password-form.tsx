@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/client";
-import { getAuthCallbackUrl } from "@/lib/supabase/site-url";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,16 +32,16 @@ export function ForgotPasswordForm() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-      data.email,
-      {
-        redirectTo: getAuthCallbackUrl("/reset-password"),
-      },
-    );
+    const res = await fetch("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: data.email }),
+    });
 
-    if (resetError) {
-      setError(resetError.message);
+    const body = (await res.json()) as { error?: string; ok?: boolean };
+
+    if (!res.ok) {
+      setError(body.error ?? "Could not send reset email.");
       setLoading(false);
       return;
     }
@@ -56,8 +54,8 @@ export function ForgotPasswordForm() {
     return (
       <div className="space-y-4">
         <p className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground">
-          If an account exists for that email, we sent a password reset link.
-          Check your inbox and spam folder.
+          If an account exists for that email, we sent a password reset link from
+          ScholarGenie AI. Check inbox and spam.
         </p>
         <Button asChild variant="outline" className="w-full">
           <Link href="/login">Back to log in</Link>

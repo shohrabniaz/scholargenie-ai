@@ -82,7 +82,7 @@ export default async function ScholarshipsPage({ searchParams }: PageProps) {
   items.sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0));
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="page-shell">
       <p className="text-sm text-muted">Scholarships</p>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight">Find funding</h1>
       <p className="mt-2 text-sm text-muted">

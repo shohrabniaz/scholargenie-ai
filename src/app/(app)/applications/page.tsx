@@ -13,7 +13,7 @@ export default async function ApplicationsPage() {
     .returns<Application[]>();
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="page-shell">
       <p className="text-sm text-muted">Applications</p>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight">Track your progress</h1>
       <p className="mt-2 text-sm text-muted">

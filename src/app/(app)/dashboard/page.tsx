@@ -161,7 +161,7 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="page-shell">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm text-muted">Overview</p>

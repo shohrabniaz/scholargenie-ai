@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createConfirmedUser } from "@/lib/supabase/admin";
 import { confirmUserEmailViaDb } from "@/lib/supabase/confirm-email";
+import {
+  sendWelcomeEmail,
+  canSendBrandedAuthEmail,
+} from "@/lib/auth/send-auth-email";
 import { createClient } from "@supabase/supabase-js";
 import { getSupabasePublishableKey, getSupabaseUrl } from "@/lib/supabase/env";
 
@@ -16,16 +20,23 @@ async function signUpThenConfirmDb(email: string, password: string) {
   if (!url || !key) return { ok: false as const, reason: "no_supabase" as const };
 
   const supabase = createClient(url, key);
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback?next=/onboarding` },
+    options: {
+      emailRedirectTo: `${site}/auth/callback?next=/onboarding`,
+    },
   });
 
   if (error) {
     const lower = error.message.toLowerCase();
     if (!lower.includes("already") && !lower.includes("registered")) {
-      return { ok: false as const, reason: "signup_failed" as const, message: error.message };
+      return {
+        ok: false as const,
+        reason: "signup_failed" as const,
+        message: error.message,
+      };
     }
   }
 
@@ -35,6 +46,11 @@ async function signUpThenConfirmDb(email: string, password: string) {
   }
 
   return { ok: true as const };
+}
+
+async function notifyNewUser(email: string) {
+  if (!canSendBrandedAuthEmail()) return;
+  await sendWelcomeEmail(email);
 }
 
 export async function POST(request: Request) {
@@ -50,6 +66,7 @@ export async function POST(request: Request) {
   const result = await createConfirmedUser(email, password);
 
   if (result.ok) {
+    void notifyNewUser(email);
     return NextResponse.json({ ok: true, existing: result.existing ?? false });
   }
 
@@ -62,6 +79,7 @@ export async function POST(request: Request) {
 
   const fallback = await signUpThenConfirmDb(email, password);
   if (fallback.ok) {
+    void notifyNewUser(email);
     return NextResponse.json({ ok: true, existing: false });
   }
 

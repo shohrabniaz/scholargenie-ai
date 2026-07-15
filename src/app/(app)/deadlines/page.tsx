@@ -40,7 +40,7 @@ export default async function DeadlinesPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="page-shell">
       <p className="text-sm text-muted">Deadlines</p>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight">Stay on track</h1>
       <p className="mt-2 text-sm text-muted">

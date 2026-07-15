@@ -18,7 +18,7 @@ export default async function AdvisorPage() {
 
   if (!profile?.onboarding_completed) {
     return (
-      <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="page-shell">
         <p className="text-sm text-muted">AI Advisor</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">Your copilot</h1>
         <p className="mt-4 rounded-xl border border-border bg-surface px-4 py-3 text-sm text-muted">
@@ -48,7 +48,7 @@ export default async function AdvisorPage() {
   );
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="page-shell">
       <p className="text-sm text-muted">AI Advisor</p>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight">Your copilot</h1>
       <p className="mt-2 text-sm text-muted">

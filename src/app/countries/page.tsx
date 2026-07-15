@@ -16,7 +16,7 @@ export default function CountriesIndexPage() {
   return (
     <>
       <MarketingHeader />
-      <main className="mx-auto max-w-3xl px-6 py-16">
+      <main className="page-shell py-16">
         <p className="text-sm text-muted">Study abroad guides</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Where do you want to study?

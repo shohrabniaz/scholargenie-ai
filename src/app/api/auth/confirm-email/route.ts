@@ -15,38 +15,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
 
-  const email = parsed.data.email;
+  const email = parsed.data.email.trim().toLowerCase();
 
   const adminResult = await confirmUserEmail(email);
   if (adminResult.ok) {
     return NextResponse.json({
       ok: true,
       alreadyConfirmed: adminResult.alreadyConfirmed ?? false,
+      method: "admin",
     });
-  }
-
-  if (adminResult.reason !== "no_service_role" && adminResult.reason !== "not_found") {
-    return NextResponse.json(
-      { error: adminResult.message ?? "Could not verify email" },
-      { status: 400 },
-    );
   }
 
   const dbResult = await confirmUserEmailViaDb(email);
   if (dbResult.ok) {
-    return NextResponse.json({ ok: true });
-  }
-
-  if (dbResult.reason === "not_found" || adminResult.reason === "not_found") {
-    return NextResponse.json({ error: "No account found for that email." }, { status: 404 });
+    return NextResponse.json({ ok: true, method: "db" });
   }
 
   return NextResponse.json(
     {
-      error: "server_config",
+      error: "confirm_failed",
       message:
-        "Add SUPABASE_SERVICE_ROLE_KEY or SUPABASE_DB_PASSWORD on the server to enable instant verification.",
+        adminResult.message ??
+        dbResult.message ??
+        "Could not verify this email. Try the ScholarGenie verification email, or check that SUPABASE_SERVICE_ROLE_KEY is set.",
     },
-    { status: 503 },
+    { status: 500 },
   );
 }

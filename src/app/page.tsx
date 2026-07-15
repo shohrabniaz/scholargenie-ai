@@ -54,7 +54,7 @@ export default function HomePage() {
     <>
       <MarketingHeader />
       <main>
-        <section className="mx-auto max-w-5xl px-6 pb-24 pt-20 sm:pt-28">
+        <section className="mx-auto max-w-5xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-28">
           <Badge className="mb-6">Free for students</Badge>
           <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl sm:leading-[1.1]">
             {APP_NAME} — your calm copilot for studying abroad
@@ -77,7 +77,7 @@ export default function HomePage() {
         </section>
 
         <section id="features" className="border-t border-border bg-surface">
-          <div className="mx-auto max-w-5xl px-6 py-20">
+          <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20">
             <p className="text-sm font-medium text-muted">Features</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
               Everything in one place
@@ -106,7 +106,7 @@ export default function HomePage() {
         </section>
 
         <section className="border-t border-border">
-          <div className="mx-auto max-w-5xl px-6 py-20">
+          <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20">
             <p className="text-sm font-medium text-muted">Destinations</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
               Study abroad guides
@@ -133,7 +133,7 @@ export default function HomePage() {
         </section>
 
         <section id="waitlist" className="border-t border-border">
-          <div className="mx-auto max-w-5xl px-6 py-20">
+          <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20">
             <WaitlistForm />
           </div>
         </section>

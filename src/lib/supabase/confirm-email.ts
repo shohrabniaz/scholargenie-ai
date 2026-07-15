@@ -29,10 +29,12 @@ export async function confirmUserEmailViaDb(email: string) {
 
   try {
     await client.connect();
+    // Only touch email_confirmed_at — confirmed_at is a legacy generated column
+    // on many Supabase projects and breaks updates when set directly.
     const { rowCount } = await client.query(
       `update auth.users
        set email_confirmed_at = coalesce(email_confirmed_at, now()),
-           confirmed_at = coalesce(confirmed_at, now())
+           updated_at = now()
        where lower(email) = lower($1)`,
       [email],
     );
@@ -42,11 +44,40 @@ export async function confirmUserEmailViaDb(email: string) {
     }
 
     return { ok: true as const };
+  } catch (error) {
+    return {
+      ok: false as const,
+      reason: "query_failed" as const,
+      message: error instanceof Error ? error.message : "DB confirm failed",
+    };
   } finally {
-    await client.end();
+    await client.end().catch(() => undefined);
   }
 }
 
 export function canConfirmEmail() {
   return Boolean(getSupabaseServiceRoleKey() || getDatabaseUrl());
+}
+
+export async function findUserIdByEmail(email: string) {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) return null;
+
+  const client = new pg.Client({
+    connectionString: databaseUrl,
+    ssl: { rejectUnauthorized: false },
+  });
+
+  try {
+    await client.connect();
+    const { rows } = await client.query<{ id: string }>(
+      `select id::text from auth.users where lower(email) = lower($1) limit 1`,
+      [email],
+    );
+    return rows[0]?.id ?? null;
+  } catch {
+    return null;
+  } finally {
+    await client.end().catch(() => undefined);
+  }
 }
