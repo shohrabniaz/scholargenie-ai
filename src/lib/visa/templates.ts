@@ -7,11 +7,11 @@ export const VISA_TEMPLATES: VisaTemplate[] = [
   {
     country: "Australia",
     steps: [
-      { title: "Receive CoE", detail: "Get Confirmation of Enrolment from your university." },
+      { title: "Receive CoE", detail: "Get Confirmation of Enrolment from your CRICOS-registered university." },
       { title: "Create ImmiAccount", detail: "Apply for Student visa (subclass 500) online." },
-      { title: "GTE statement", detail: "Write a Genuine Temporary Entrant statement." },
-      { title: "Health insurance (OSHC)", detail: "Purchase Overseas Student Health Cover." },
-      { title: "Biometrics", detail: "Attend biometrics if requested." },
+      { title: "Genuine Student (GS)", detail: "Explain study plans, course fit, and ties to your home country." },
+      { title: "Health insurance (OSHC)", detail: "Purchase Overseas Student Health Cover for the visa period." },
+      { title: "Biometrics / health", detail: "Complete biometrics or medicals if Immigration requests them." },
     ],
   },
   {

@@ -31,6 +31,13 @@ export default async function CountryGuidePage({ params }: PageProps) {
   const page = getCountryPage(slug);
   if (!page) notFound();
 
+  const scholarshipHref = page.scholarshipFilter
+    ? `/scholarships?country=${encodeURIComponent(page.scholarshipFilter)}`
+    : "/scholarships";
+  const universityHref = page.universityFilter
+    ? `/universities?country=${encodeURIComponent(page.universityFilter)}`
+    : "/universities";
+
   return (
     <>
       <MarketingHeader />
@@ -52,6 +59,34 @@ export default async function CountryGuidePage({ params }: PageProps) {
           ))}
         </ul>
 
+        {page.sections?.length ? (
+          <div className="mt-12 space-y-10">
+            {page.sections.map((section) => (
+              <section key={section.title} aria-labelledby={`section-${section.title}`}>
+                <h2
+                  id={`section-${section.title}`}
+                  className="text-lg font-semibold tracking-tight text-foreground"
+                >
+                  {section.title}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{section.body}</p>
+                {section.bullets?.length ? (
+                  <ul className="mt-4 space-y-2">
+                    {section.bullets.map((bullet) => (
+                      <li
+                        key={bullet}
+                        className="flex gap-2 text-sm text-foreground before:mt-2 before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-muted before:content-['']"
+                      >
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            ))}
+          </div>
+        ) : null}
+
         <div className="mt-10 flex flex-wrap gap-3">
           <Button asChild>
             <Link href="/signup">
@@ -60,7 +95,10 @@ export default async function CountryGuidePage({ params }: PageProps) {
             </Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/scholarships">Browse scholarships</Link>
+            <Link href={scholarshipHref}>Browse {page.name} scholarships</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href={universityHref}>Universities in {page.name}</Link>
           </Button>
         </div>
 

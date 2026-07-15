@@ -55,7 +55,7 @@ const EXTRA_SCHOLARSHIPS = [
   ["Victoria University of Wellington Tongarewa", "New Zealand", "partial", "2026-09-01", ["bsc", "msc"], ["computer science", "data science"]],
   ["QS Scholarship for Academic Excellence", "United Kingdom", "merit", "2026-06-30", ["bsc", "msc"], ["computer science", "ai"]],
   ["Joint Japan World Bank Graduate Scholarship", "United States", "fully_funded", "2026-05-12", ["msc"], ["public policy", "data science"]],
-  ["ADB-Japan Scholarship Program", "Australia", "fully_funded", "2026-07-01", ["msc"], ["engineering", "computer science"]],
+  ["ADB-Japan Scholarship Program", "Japan", "fully_funded", "2026-07-01", ["msc"], ["engineering", "computer science"]],
 ];
 
 const EXTRA_UNIVERSITIES = [

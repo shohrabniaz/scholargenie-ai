@@ -46,7 +46,7 @@ const EXTRA_SCHOLARSHIPS = [
   ["TU Delft Justus & Louise van Effen", "Netherlands", "fully_funded", "2026-02-01"],
   ["University of Sydney VC Scholarship", "Australia", "merit", "2026-09-30"],
   ["Australia RTP Scholarship", "Australia", "fully_funded", "2026-04-30"],
-  ["MEXT Research Scholarship Japan", "Australia", "fully_funded", "2026-05-31"],
+  ["MEXT Research Scholarship Japan", "Japan", "fully_funded", "2026-05-31"],
   ["Swedish Institute Scholarships", "Germany", "fully_funded", "2026-02-10"],
   ["Eiffel Excellence Scholarship", "Germany", "fully_funded", "2026-01-08"],
   ["British Council GREAT Scholarships", "United Kingdom", "partial", "2026-04-15"],
