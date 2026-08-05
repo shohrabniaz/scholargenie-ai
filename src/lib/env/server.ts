@@ -9,7 +9,7 @@ export function getResendApiKey() {
 export function getResendFromEmail() {
   return (
     process.env.RESEND_FROM_EMAIL?.trim() ||
-    "ScholarGenie AI <onboarding@resend.dev>"
+    "AbroadGenie AI <onboarding@resend.dev>"
   );
 }
 

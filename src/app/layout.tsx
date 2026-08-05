@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ScholarGenie AI — Your AI Study Abroad Copilot",
-    template: "%s | ScholarGenie AI",
+    default: "AbroadGenie AI — Your AI Study Abroad Copilot",
+    template: "%s | AbroadGenie AI",
   },
   description:
     "Find scholarships, universities, and professors matched to your profile. Free for international students.",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://scholargenie-ai.vercel.app",
   ),
   openGraph: {
-    title: "ScholarGenie AI — Your AI Study Abroad Copilot",
+    title: "AbroadGenie AI — Your AI Study Abroad Copilot",
     description:
       "Scholarship matches, universities, professors, and a weekly action plan — free for international students.",
-    siteName: "ScholarGenie AI",
+    siteName: "AbroadGenie AI",
     type: "website",
   },
 };

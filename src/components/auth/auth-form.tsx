@@ -27,7 +27,7 @@ type AuthFormProps = {
 function friendlyAuthError(message: string) {
   const lower = message.toLowerCase();
   if (lower.includes("email not confirmed") || lower.includes("not confirmed")) {
-    return "Your email is not verified yet. Request a ScholarGenie verification email below, or verify instantly.";
+    return "Your email is not verified yet. Request an AbroadGenie verification email below, or verify instantly.";
   }
   if (lower.includes("invalid login credentials")) {
     return "Incorrect email or password. Try again or reset your password.";
@@ -148,7 +148,7 @@ export function AuthForm({
       setNeedsVerification(false);
     } else {
       setMessage(
-        "We sent a verification email from ScholarGenie AI. Check inbox and spam, then tap the link.",
+        "We sent a verification email from AbroadGenie AI. Check inbox and spam, then tap the link.",
       );
     }
     setLoading(false);

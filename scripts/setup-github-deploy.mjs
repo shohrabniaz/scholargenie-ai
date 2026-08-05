@@ -6,7 +6,7 @@ import { execSync } from "node:child_process";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const projectJsonPath = resolve(projectRoot, ".vercel", "project.json");
-const TOKEN_NAME = "ScholarGenie GitHub Actions";
+const TOKEN_NAME = "AbroadGenie GitHub Actions";
 
 function readProjectIds() {
   if (!existsSync(projectJsonPath)) {

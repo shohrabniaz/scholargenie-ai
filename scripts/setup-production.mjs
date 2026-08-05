@@ -26,7 +26,7 @@ if (existsSync(envPath)) {
 }
 
 console.log(`
-ScholarGenie AI — production setup
+AbroadGenie AI — production setup
 ==================================
 
 1. Vercel (frontend)

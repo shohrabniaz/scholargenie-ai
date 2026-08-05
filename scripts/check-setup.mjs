@@ -89,7 +89,7 @@ async function main() {
     "VERCEL_TOKEN",
   ];
 
-  console.log("ScholarGenie AI — setup check\n");
+  console.log("AbroadGenie AI — setup check\n");
 
   let issues = 0;
   for (const key of required) {

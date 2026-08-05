@@ -55,7 +55,7 @@ export function ForgotPasswordForm() {
       <div className="space-y-4">
         <p className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-foreground">
           If an account exists for that email, we sent a password reset link from
-          ScholarGenie AI. Check inbox and spam.
+          AbroadGenie AI. Check inbox and spam.
         </p>
         <Button asChild variant="outline" className="w-full">
           <Link href="/login">Back to log in</Link>

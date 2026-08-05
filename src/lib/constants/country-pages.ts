@@ -84,7 +84,7 @@ export const COUNTRY_PAGES: CountryPage[] = [
         ],
       },
       {
-        title: "How to use ScholarGenie for Australia",
+        title: "How to use AbroadGenie for Australia",
         body: "Complete onboarding with Australia as a preferred destination so matches, weekly plans, and professor outreach prioritise AU options.",
         bullets: [
           "Filter Scholarships → Country: Australia",

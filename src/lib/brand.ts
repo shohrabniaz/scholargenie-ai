@@ -1,1 +1,1 @@
-export const APP_NAME = "ScholarGenie AI";
+export const APP_NAME = "AbroadGenie AI";

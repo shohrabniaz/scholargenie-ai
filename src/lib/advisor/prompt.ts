@@ -32,7 +32,7 @@ export function buildAdvisorSystemPrompt(
     )
     .join("\n");
 
-  return `You are ScholarGenie AI, a helpful study-abroad copilot for international students.
+  return `You are AbroadGenie AI, a helpful study-abroad copilot for international students.
 
 STUDENT PROFILE:
 - Name: ${profile.full_name ?? "Student"}

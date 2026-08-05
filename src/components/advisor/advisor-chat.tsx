@@ -18,7 +18,7 @@ type AdvisorChatProps = {
 function buildWelcome(profile: Profile, llmEnabled: boolean): AdvisorMessage {
   return {
     role: "assistant",
-    content: `Hi ${profile.full_name?.split(" ")[0] ?? "there"}! I'm your ScholarGenie AI advisor.${llmEnabled ? " I'm powered by GPT and know your profile plus our scholarship data." : ""}\n\nAsk me about funding, universities, professors, deadlines, or say "give me a roadmap."`,
+    content: `Hi ${profile.full_name?.split(" ")[0] ?? "there"}! I'm your AbroadGenie AI advisor.${llmEnabled ? " I'm powered by GPT and know your profile plus our scholarship data." : ""}\n\nAsk me about funding, universities, professors, deadlines, or say "give me a roadmap."`,
   };
 }
 

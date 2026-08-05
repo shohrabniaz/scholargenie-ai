@@ -34,7 +34,7 @@ async function main() {
   const ref = projectRef();
   const from =
     process.env.RESEND_FROM_EMAIL?.trim() ||
-    "ScholarGenie AI <onboarding@resend.dev>";
+    "AbroadGenie AI <onboarding@resend.dev>";
 
   if (!token) {
     console.error("Missing SUPABASE_ACCESS_TOKEN (supabase.com/dashboard/account/tokens)");
@@ -51,7 +51,7 @@ async function main() {
 
   // Parse "Name <email@domain>" or bare email
   const match = from.match(/^(.*?)\s*<([^>]+)>$/);
-  const senderName = match?.[1]?.trim() || "ScholarGenie AI";
+  const senderName = match?.[1]?.trim() || "AbroadGenie AI";
   const adminEmail = match?.[2]?.trim() || from;
 
   const payload = {
@@ -86,7 +86,7 @@ async function main() {
   console.log("Supabase Auth SMTP configured via Resend.");
   console.log(`Sender: ${senderName} <${adminEmail}>`);
   console.log(
-    "Auth emails (reset/verify) will show as ScholarGenie, not Supabase.",
+    "Auth emails (reset/verify) will show as AbroadGenie, not Supabase.",
   );
   console.log(
     "Tip: verify your domain in Resend for production (onboarding@resend.dev is test-only).",

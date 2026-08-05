@@ -22,7 +22,7 @@ export default function CountriesIndexPage() {
           Where do you want to study?
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-muted">
-          Short guides for top destinations — funding, visa pathways, and how ScholarGenie
+          Short guides for top destinations — funding, visa pathways, and how AbroadGenie
           can match you to scholarships and universities.
         </p>
 

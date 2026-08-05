@@ -1,4 +1,4 @@
-# ScholarGenie AI
+# AbroadGenie AI
 
 **Your AI Study Abroad Copilot** — free for international students.
 

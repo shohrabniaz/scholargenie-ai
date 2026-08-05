@@ -35,7 +35,7 @@ export function buildDeadlineDigestHtml(
 <html>
 <body style="font-family:system-ui,sans-serif;color:#18181b;max-width:560px;margin:0 auto;padding:24px;">
   <h1 style="font-size:20px;">Upcoming deadlines</h1>
-  <p style="color:#71717a;">From ScholarGenie AI — your study-abroad copilot.</p>
+  <p style="color:#71717a;">From AbroadGenie AI — your study-abroad copilot.</p>
   <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:16px;">
     <thead>
       <tr style="text-align:left;color:#71717a;">
@@ -72,7 +72,7 @@ export async function sendDeadlineDigestEmail(
     body: JSON.stringify({
       from: getResendFromEmail(),
       to: [to],
-      subject: `ScholarGenie AI — ${items.length} upcoming deadline${items.length === 1 ? "" : "s"}`,
+      subject: `AbroadGenie AI — ${items.length} upcoming deadline${items.length === 1 ? "" : "s"}`,
       html,
     }),
   });

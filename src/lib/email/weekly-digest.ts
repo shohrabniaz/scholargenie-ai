@@ -21,7 +21,7 @@ export function buildWeeklyDigestHtml(actions: WeeklyAction[], siteUrl: string) 
   return `<!DOCTYPE html>
 <html>
 <body style="font-family:system-ui,sans-serif;color:#18181b;max-width:560px;margin:0 auto;padding:24px;">
-  <h1 style="font-size:20px;">Your week with ScholarGenie AI</h1>
+  <h1 style="font-size:20px;">Your week with AbroadGenie AI</h1>
   <p style="color:#71717a;">Three to six focused actions from your matches, deadlines, and applications.</p>
   <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:16px;">
     <tbody>${rows}</tbody>
@@ -51,7 +51,7 @@ export async function sendWeeklyDigestEmail(to: string, actions: WeeklyAction[])
     body: JSON.stringify({
       from: getResendFromEmail(),
       to: [to],
-      subject: `ScholarGenie AI — ${actions.length} action${actions.length === 1 ? "" : "s"} for this week`,
+      subject: `AbroadGenie AI — ${actions.length} action${actions.length === 1 ? "" : "s"} for this week`,
       html,
     }),
   });

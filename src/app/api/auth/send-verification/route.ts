@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
   const sent = await sendVerificationEmail(email);
   if (sent.ok) {
-    return NextResponse.json({ ok: true, channel: "scholargenie" });
+    return NextResponse.json({ ok: true, channel: "abroadgenie" });
   }
 
   // If Resend isn't ready, fall back to instant confirm so login isn't blocked
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         ok: true,
         method: "instant",
-        note: "Verified instantly. Add RESEND_API_KEY to send ScholarGenie verification emails.",
+        note: "Verified instantly. Add RESEND_API_KEY to send AbroadGenie verification emails.",
       });
     }
     const dbResult = await confirmUserEmailViaDb(email);
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         ok: true,
         method: "instant",
-        note: "Verified instantly. Add RESEND_API_KEY to send ScholarGenie verification emails.",
+        note: "Verified instantly. Add RESEND_API_KEY to send AbroadGenie verification emails.",
       });
     }
   }

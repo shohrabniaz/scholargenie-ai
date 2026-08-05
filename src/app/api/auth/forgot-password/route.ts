@@ -18,12 +18,12 @@ export async function POST(request: Request) {
 
   const email = parsed.data.email.trim().toLowerCase();
 
-  // Prefer ScholarGenie-branded Resend mail (never "from Supabase")
+  // Prefer AbroadGenie-branded Resend mail (never "from Supabase")
   const branded = await sendPasswordResetEmail(email);
   if (branded.ok) {
     return NextResponse.json({
       ok: true,
-      channel: "scholargenie",
+      channel: "abroadgenie",
     });
   }
 

@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       message:
         adminResult.message ??
         dbResult.message ??
-        "Could not verify this email. Try the ScholarGenie verification email, or check that SUPABASE_SERVICE_ROLE_KEY is set.",
+        "Could not verify this email. Try the AbroadGenie verification email, or check that SUPABASE_SERVICE_ROLE_KEY is set.",
     },
     { status: 500 },
   );
